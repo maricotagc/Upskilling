@@ -15,14 +15,6 @@ public class Entity {
         this.countryOfIncorporation = countryOfIncorporation;
     }
 
-    public void setNameOfEntity(String nameOfEntity) {
-        this.nameOfEntity = nameOfEntity;
-    }
-
-    public void setCountryOfIncorporation(String countryOfIncorporation) {
-        this.countryOfIncorporation = countryOfIncorporation;
-    }
-
     public void setMainIdentifier(Integer mainIdentifier) {
         this.mainIdentifier = mainIdentifier;
     }
@@ -39,25 +31,31 @@ public class Entity {
         return nameOfEntity;
     }
 
-    public String getCountryOfIncorporation() {
-        return countryOfIncorporation;
-    }
+//    public void setNameOfEntity(String nameOfEntity) {
+//        this.nameOfEntity = nameOfEntity;
+//    }
 
-    public Integer getMainIdentifier() {
-        return mainIdentifier;
-    }
+//    public void setCountryOfIncorporation(String countryOfIncorporation) {
+//        this.countryOfIncorporation = countryOfIncorporation;
+//    }
+//    public String getCountryOfIncorporation() {
+//        return countryOfIncorporation;
+//    }
 
-    public ArrayList<String> getAlternateNames() {
-        return alternateNames;
-    }
-
-    public String getComment() {
-        return comment;
-    }
+//    public Integer getMainIdentifier() {
+//        return mainIdentifier;
+//    }
+//
+//    public ArrayList<String> getAlternateNames() {
+//        return alternateNames;
+//    }
+//
+//    public String getComment() {
+//        return comment;
+//    }
 
     @Override
     public String toString() {
-
 
         StringBuilder res = new StringBuilder();
 

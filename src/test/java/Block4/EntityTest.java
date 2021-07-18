@@ -11,13 +11,15 @@ public class EntityTest {
     @Test
     public void shouldReturnTrueForEquals() {
         Entity test = new Entity("Brazil", "Brazil");
-        Assert.assertTrue(test.equals(test));
+        Entity test2 = new Entity("Brazil", "Brazil");
+        Assert.assertTrue(test.equals(test2));
     }
 
     @Test
     public void shouldReturnFalseForEquals() {
-        Entity test = new Entity("Brazil", "Brasil");
-        Assert.assertFalse(test.equals(test));
+        Entity test = new Entity("Brazil", "Brazil");
+        Entity test2 = new Entity("Brazil", "Brasil");
+        Assert.assertFalse(test.equals(test2));
     }
 
     @Test
