@@ -19,7 +19,7 @@ public class MyEmaster {
         }
     }
 
-    public void showAllEntities() {
+    public List<Entity> showAllEntities() {
         List<Entity> uniqueEntities = new ArrayList<>();
 
         for (Entity element : entityList) {
@@ -27,11 +27,20 @@ public class MyEmaster {
                 uniqueEntities.add(element);
             }
         }
-        System.out.println(uniqueEntities);
+        return uniqueEntities;
+    }
+
+    public void printShowAllEntities() {
+
+        List<Entity> uniqueEntities = new ArrayList<>();
+        uniqueEntities = showAllEntities();
+
+        for (Entity element : entityList) {
+            System.out.println(uniqueEntities);
+        }
     }
 
     public void removeAllElementInMyEmaster() {
         entityList.removeAll(entityList);
     }
-
 }

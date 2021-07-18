@@ -2,9 +2,11 @@ package Block4;
 
 import mm.example.Block4.Entity;
 import mm.example.Block4.MyEmaster;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MyEmasterTest {
 
@@ -24,37 +26,39 @@ public class MyEmasterTest {
         test = new MyEmaster();
     }
 
-    //TODO how to assert a void method?
     @Test
     public void shouldReturnTrueForNewEntityOnTheList() {
         test.addNewMyEmaster(entity1);
         test.addNewMyEmaster(entity2);
-        test.showAllEntities();
+        test.printShowAllEntities();
     }
 
-    //TODO how to assert a void method?
     @Test
     public void removeAllEntitiesByName() {
         test.addNewMyEmaster(entity1);
         test.addNewMyEmaster(entity4);
-        test.showAllEntities();
+        test.printShowAllEntities();
         test.removeAllEntitiesByName("Japan");
-        test.showAllEntities();
+        test.printShowAllEntities();
     }
 
     @Test
-    public void showAllEntities() {
+    public void shouldReturnListOfUniqueEntities() {
+        List<Entity> expectedEntities = new ArrayList<>();
+        expectedEntities.add(entity1);
+        expectedEntities.add(entity4);
         test.addNewMyEmaster(entity1);
         test.addNewMyEmaster(entity4);
-        test.showAllEntities();
+        Assert.assertEquals(expectedEntities, test.showAllEntities());
     }
 
     @Test
     public void removeAllElementInMyEmaster() {
         test.addNewMyEmaster(entity1);
         test.addNewMyEmaster(entity4);
-        test.showAllEntities();
+        test.printShowAllEntities();
         test.removeAllElementInMyEmaster();
-        test.showAllEntities();
+        System.out.println("After removal: ");
+        test.printShowAllEntities();
     }
 }

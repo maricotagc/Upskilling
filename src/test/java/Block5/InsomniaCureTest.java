@@ -1,6 +1,6 @@
-package Block4;
+package Block5;
 
-import mm.example.Block4.InsomniaCure;
+import mm.example.Block5.InsomniaCure;
 import org.junit.Assert;
 import org.junit.Test;
 
