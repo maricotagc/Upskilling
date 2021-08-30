@@ -1,6 +1,5 @@
-package Block3;
+package mm.example.Block3;
 
-import mm.example.Block3.Polyhedrons;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

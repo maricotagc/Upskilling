@@ -1,6 +1,5 @@
-package Block0;
+package mm.example.Block0;
 
-import mm.example.Block0.FindMaxMinArray;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;

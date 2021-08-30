@@ -1,6 +1,5 @@
-package Block2;
+package mm.example.Block2;
 
-import mm.example.Block2.ChatRoom;
 import org.junit.Assert;
 import org.junit.Test;
 

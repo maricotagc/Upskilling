@@ -9,7 +9,7 @@
 ////    @Test
 ////    public void shouldReturnWordAbbreviated() {
 ////        String wordAbbreviated;
-////        wordAbbreviated = new Block1().wordAbbreviation("localization"));
+////        wordAbbreviated = new mm.example.Block1().wordAbbreviation("localization"));
 ////        System.out.println(wordAbbreviated);
 //    }
 //}
@@ -27,5 +27,5 @@
 //        wordsList.add("");
 //        wordsList.add(null);
 //
-//        new Block1().wordAbbreviation(wordsList);
+//        new mm.example.Block1().wordAbbreviation(wordsList);
 //        }

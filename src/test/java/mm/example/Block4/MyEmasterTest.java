@@ -1,7 +1,5 @@
-package Block4;
+package mm.example.Block4;
 
-import mm.example.Block4.Entity;
-import mm.example.Block4.MyEmaster;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
