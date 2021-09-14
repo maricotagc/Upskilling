@@ -25,8 +25,11 @@ public class LibraryManagerRepositoryTest {
         ConnectionManager connectionManager = new ConnectionManager();
 
         BookRepository bookRepository = new BookRepository(connectionManager.getConnection());
+        bookRepository.deleteAll();
         LibraryRepository libraryRepository = new LibraryRepository(connectionManager.getConnection());
+        libraryRepository.deleteAll();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(connectionManager.getConnection());
+        libraryManagerRepository.deleteAll();
 
         try {
             bookRepository.add(book1);
@@ -40,7 +43,6 @@ public class LibraryManagerRepositoryTest {
 
     @Test
     public void updateAvailableBooks() throws Exception {
-
         Book book1 = new Book();
         book1.setId(1);
         book1.setName("Harry Potter and the Philosophers Stone");
@@ -54,8 +56,11 @@ public class LibraryManagerRepositoryTest {
         ConnectionManager connectionManager = new ConnectionManager();
 
         BookRepository bookRepository = new BookRepository(connectionManager.getConnection());
+        bookRepository.deleteAll();
         LibraryRepository libraryRepository = new LibraryRepository(connectionManager.getConnection());
+        libraryRepository.deleteAll();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(connectionManager.getConnection());
+        libraryManagerRepository.deleteAll();
 
         try {
             bookRepository.add(book1);

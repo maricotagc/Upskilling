@@ -13,6 +13,7 @@ public class LibraryRepositoryTest {
         LibraryRepository libraryRepository = new LibraryRepository(connectionManager.getConnection());
 
         try {
+            libraryRepository.deleteAll();
             int result = libraryRepository.add(1, "NEW YORK PUBLIC LIBRARY", "476 5th Ave, New York, NY 10018, United States");
             Library library = libraryRepository.findById(1);
             Assert.assertEquals(1, result);
@@ -29,6 +30,7 @@ public class LibraryRepositoryTest {
         ConnectionManager connectionManager = new ConnectionManager();
         LibraryRepository libraryRepository = new LibraryRepository(connectionManager.getConnection());
         try {
+            libraryRepository.deleteAll();
             libraryRepository.add(2, "Shanghai Library", "1555 Huaihai Road, Xuhui District, Shanghai, China");
             int result = libraryRepository.remove(2);
             Assert.assertEquals(1, result);
@@ -41,7 +43,8 @@ public class LibraryRepositoryTest {
     public void shouldReturn1ForLibrarySuccessfullyUpdated() throws Exception {
         ConnectionManager connectionManager = new ConnectionManager();
         LibraryRepository libraryRepository = new LibraryRepository(connectionManager.getConnection());
-        Library library = new Library();
+        libraryRepository.deleteAll();
+        Library library;
         try {
             libraryRepository.add(3, "Library and Archives Canada", "395 Wellington St, Ottawa, ON K1A 0N4, Canada");
             library = libraryRepository.findById(3);
