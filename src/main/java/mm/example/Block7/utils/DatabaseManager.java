@@ -4,20 +4,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class ConnectionManager {
-    private static final String URL = "jdbc:mysql://localhost:3306/bookshop";
-    private static final String USER = "root";
-    private static final String PASSWORD = "@Brasil2010";
+
+public class DatabaseManager {
+    private static final String URL = "jdbc:sqlite:test.db";
 
     private Connection connection;
 
-    public ConnectionManager() throws Exception {
+    public DatabaseManager() throws Exception {
         try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(URL, USER, PASSWORD);
+            Class.forName("org.sqlite.JDBC");
+            connection = DriverManager.getConnection(URL);
+
         } catch (Exception e) {
             throw new Exception("It was not possible to connect to the bookshop database", e);
         }
+        System.out.println("Opened database successfully");
     }
 
     public Connection getConnection() {
