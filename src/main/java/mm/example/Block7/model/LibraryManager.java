@@ -54,15 +54,15 @@ public class LibraryManager {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LibraryManager)) return false;
-        LibraryManager that = (LibraryManager) o;
+    public boolean equals(Object o) {if (this == o) return true;if (!(o instanceof LibraryManager)) return false;LibraryManager that = (
+
+
+            LibraryManager) o;
         return bookId == that.bookId && libraryId == that.libraryId && totalCopies == that.totalCopies && availableCopies == that.availableCopies;
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(bookId, libraryId, totalCopies, availableCopies);
+    public int hashCode() {return Objects.hash(bookId, libraryId, totalCopies, availableCopies);
+
     }
 }
