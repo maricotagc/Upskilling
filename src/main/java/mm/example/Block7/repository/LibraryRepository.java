@@ -12,7 +12,6 @@ public class LibraryRepository {
     private static final String SQL_SELECT_BY_ID = "SELECT * FROM library WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM library WHERE id = ?";
     private static final String SQL_UPDATE_BY_ID = "UPDATE library SET name = ?, address = ? WHERE id = ?";
-    private static final String SQL_DELETE_ALL = "DELETE FROM library";
 
     private final Connection connection;
 
@@ -73,22 +72,6 @@ public class LibraryRepository {
         } finally {
             if (preparedStatement != null) {
                 preparedStatement.close();
-            }
-        }
-        return result;
-    }
-
-    public int deleteAll() throws Exception {
-        PreparedStatement stmt = null;
-        int result;
-        try {
-            stmt = connection.prepareStatement(SQL_DELETE_ALL);
-            result = stmt.executeUpdate();
-        } catch (Exception e) {
-            throw new Exception("It was not possible to remove all libraries from the database.", e);
-        } finally {
-            if (stmt != null) {
-                stmt.close();
             }
         }
         return result;

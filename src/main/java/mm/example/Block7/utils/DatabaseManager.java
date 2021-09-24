@@ -18,7 +18,6 @@ public class DatabaseManager {
         } catch (Exception e) {
             throw new Exception("It was not possible to connect to the bookshop database", e);
         }
-        System.out.println("Opened database successfully");
     }
 
     public Connection getConnection() {

@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookRepository {
-    private static final String SQL_INSERT = "INSERT INTO book (id, name, author) VALUES (?,?,?)";
+    private static final String SQL_INSERT = "INSERT INTO book (name, author) VALUES (?,?)";
     private static final String SQL_SELECT_ALL = "SELECT id, name, author FROM book";
     private static final String SQL_SELECT_BY_ID = "SELECT id, name, author FROM book WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM book WHERE id = ?";
-    private static final String SQL_DELETE_ALL = "DELETE FROM book";
+    private static final String SQL_SELECT_BY_BOOK_NAME = "SELECT id, name, author FROM book WHERE name like ?";
 
     private final Connection connection;
 
@@ -26,9 +26,8 @@ public class BookRepository {
         int result;
         try {
             preparedStatement = connection.prepareStatement(SQL_INSERT);
-            preparedStatement.setInt(1, b.getId());
-            preparedStatement.setString(2, b.getName());
-            preparedStatement.setString(3, b.getAuthor());
+            preparedStatement.setString(1, b.getName());
+            preparedStatement.setString(2, b.getAuthor());
             result = preparedStatement.executeUpdate();
         } catch (Exception exception) {
             throw new Exception("It was not possible to add the book: " + b, exception);
@@ -40,7 +39,7 @@ public class BookRepository {
         return result;
     }
 
-    public int remove(int bookId) throws Exception {
+    public String remove(int bookId) throws Exception {
         PreparedStatement stmt = null;
         int result;
         try {
@@ -54,23 +53,7 @@ public class BookRepository {
                 stmt.close();
             }
         }
-        return result;
-    }
-
-    public int deleteAll() throws Exception {
-        PreparedStatement stmt = null;
-        int result;
-        try {
-            stmt = connection.prepareStatement(SQL_DELETE_ALL);
-            result = stmt.executeUpdate();
-        } catch (Exception e) {
-            throw new Exception("It was not possible to remove all books from the database.", e);
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-        }
-        return result;
+        return "Book was successfully removed from book table.";
     }
 
     public List<Book> findAll() throws Exception {
@@ -117,4 +100,28 @@ public class BookRepository {
         }
         return book1;
     }
+
+    public Book findByBookName(String bookName) throws Exception {
+        PreparedStatement stmt = null;
+        Book book1 = new Book();
+        try {
+            stmt = connection.prepareStatement(SQL_SELECT_BY_BOOK_NAME);
+            stmt.setString(1, bookName);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                book1.setId(rs.getInt("id"));
+                book1.setName(rs.getString("name"));
+                book1.setAuthor(rs.getString("author"));
+            }
+        } catch (Exception e) {
+            throw new Exception("It was not possible to find book by name = " + bookName, e);
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+        return book1;
+    }
+
+
 }
