@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LibraryRepository {
-    private static final String SQL_INSERT = "INSERT INTO library (id, name, address) VALUES (?, ?, ?)";
-    private static final String SQL_SELECT_BY_ID = "SELECT * FROM library WHERE id = ?";
+    private static final String SQL_INSERT = "INSERT INTO library (name, address) VALUES (?, ?)";
+    private static final String SQL_SELECT_BY_ID = "SELECT id, name, address FROM library WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM library WHERE id = ?";
     private static final String SQL_UPDATE_BY_ID = "UPDATE library SET name = ?, address = ? WHERE id = ?";
 
@@ -19,14 +19,13 @@ public class LibraryRepository {
         this.connection = connection;
     }
 
-    public int add(int LibraryId, String libraryName, String libraryAddress) throws Exception {
+    public int add(String libraryName, String libraryAddress) throws Exception {
         PreparedStatement preparedStatement = null;
-        int result = 0;
+        int result;
         try {
             preparedStatement = connection.prepareStatement(SQL_INSERT);
-            preparedStatement.setInt(1, LibraryId);
-            preparedStatement.setString(2, libraryName);
-            preparedStatement.setString(3, libraryAddress);
+            preparedStatement.setString(1, libraryName);
+            preparedStatement.setString(2, libraryAddress);
             result = preparedStatement.executeUpdate();
         } catch (Exception e) {
             throw new Exception("It was not possible to add the new library: " + libraryName, e);
