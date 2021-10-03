@@ -58,10 +58,11 @@ public class BookRepository {
 
     public List<Book> findAll() throws Exception {
         List<Book> books = new ArrayList<>();
-        PreparedStatement stmt = null;
+        PreparedStatement preparedStatement = null;
+
         try {
-            stmt = connection.prepareStatement(SQL_SELECT_ALL);
-            ResultSet rs = stmt.executeQuery();
+            preparedStatement = connection.prepareStatement(SQL_SELECT_ALL);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 Book book1 = new Book();
                 book1.setId(rs.getInt("id"));
@@ -72,8 +73,8 @@ public class BookRepository {
         } catch (Exception e) {
             throw new Exception("It was not possible to find books", e);
         } finally {
-            if (stmt != null) {
-                stmt.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
         }
         return books;

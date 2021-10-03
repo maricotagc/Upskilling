@@ -1,6 +1,7 @@
 package mm.example.Block7.repository;
 
 import mm.example.Block7.model.Book;
+import mm.example.Block7.model.Library;
 import mm.example.Block7.utils.DatabaseManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -24,7 +25,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void shouldReturn1ForBookSuccessfullyAdded() throws Exception {
+    public void addNewBook() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
@@ -44,7 +45,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void shouldReturn1ForBookSuccessfullyRemoved() throws Exception {
+    public void removeBookByID() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
         Book book1 = new Book();
@@ -61,7 +62,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void viewAllBooks() throws Exception {
+    public void ShowAllBooksInShop() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
@@ -89,6 +90,54 @@ public class BookRepositoryTest extends AbstractBaseTest{
             databaseManager.closeConnection();
         }
     }
+
+//    @Test
+//    public void ShowAllAvailableBooksInShop() throws Exception {
+//        DatabaseManager databaseManager = new DatabaseManager();
+//        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+//        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+//        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
+//
+//        try {
+//            Library NycLibrary = new Library();
+//            libraryRepository.add("NYC Public Library", "Park Avenue, 5. New York City. USA");
+//
+//            Book book1 = new Book();
+//            book1.setId(1);
+//            book1.setName("Harry Potter and the Philosophers Stone");
+//            book1.setAuthor("J.K. Rowling");
+//            bookRepository.add(book1);
+//            libraryManagerRepository.addBookToLibrary(book1, NycLibrary, 25, 25);
+//            libraryManagerRepository.updateAvailableBooks(book1, NycLibrary, 10);
+//
+//            Book book2 = new Book();
+//            book2.setId(2);
+//            book2.setName("Harry Potter and the Chamber of Secrets");
+//            book2.setAuthor("J.K. Rowling");
+//            bookRepository.add(book2);
+//            libraryManagerRepository.addBookToLibrary(book2, NycLibrary, 60, 60);
+//            libraryManagerRepository.updateAvailableBooks(book2, NycLibrary, 15);
+//
+//            Book book3 = new Book();
+//            book3.setId(3);
+//            book3.setName("Harry Potter and the Prisoner of Azkaban");
+//            book3.setAuthor("J.K. Rowling");
+//            bookRepository.add(book3);
+//            libraryManagerRepository.addBookToLibrary(book3, NycLibrary, 150, 150);
+//            libraryManagerRepository.updateAvailableBooks(book3, NycLibrary, 78);
+//
+//            List<Book> expected = new ArrayList<>();
+//            expected.add(book1);
+//            expected.add(book2);
+//            expected.add(book3);
+//
+//            List<Book> actual = libraryManagerRepository
+//            assertThat(expected).hasSameElementsAs(actual);
+//
+//        } finally {
+//            databaseManager.closeConnection();
+//        }
+//    }
 
     @Test
     public void findBookById() throws Exception {
