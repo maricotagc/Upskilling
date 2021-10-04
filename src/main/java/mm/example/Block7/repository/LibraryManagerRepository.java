@@ -24,18 +24,19 @@ public class LibraryManagerRepository {
         this.connection = connection;
     }
 
-    public int addBookToLibrary(Book book, Library library, int totalCopies, int availableCopies) throws Exception {
+    public int addBookToLibrary(int bookId, int libraryId
+            , int totalCopies, int availableCopies) throws Exception {
         PreparedStatement preparedStatement = null;
         int result;
         try {
             preparedStatement = connection.prepareStatement(SQL_ADD_BOOK_TO_LIBRARY);
-            preparedStatement.setInt(1, book.getId());
-            preparedStatement.setInt(2, library.getId());
+            preparedStatement.setInt(1, bookId);
+            preparedStatement.setInt(2, libraryId);
             preparedStatement.setInt(3, totalCopies);
             preparedStatement.setInt(4, availableCopies);
             result = preparedStatement.executeUpdate();
         } catch (Exception exception) {
-            throw new Exception("It was not possible to add book " + book.getName() + " to the library " + library.getName(), exception);
+            throw new Exception("It was not possible to add book id " + bookId + " to the library id " + libraryId, exception);
         } finally {
             if (preparedStatement != null) {
                 preparedStatement.close();

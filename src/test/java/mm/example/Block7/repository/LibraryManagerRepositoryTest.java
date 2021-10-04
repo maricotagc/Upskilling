@@ -43,7 +43,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         try {
             bookRepository.add(book1);
             libraryRepository.add(library1.getName(), library1.getAddress());
-            int result = libraryManagerRepository.addBookToLibrary(book1, library1, 60, 22);
+            int result = libraryManagerRepository.addBookToLibrary(1, 1, 60, 22);
             Assert.assertEquals(1, result);
         } finally {
             databaseManager.closeConnection();
@@ -70,7 +70,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         try {
             bookRepository.add(book1);
             libraryRepository.add(library1.getName(), library1.getAddress());
-            libraryManagerRepository.addBookToLibrary(book1, library1, 99, 99);
+            libraryManagerRepository.addBookToLibrary(1, 2, 99, 99);
             int result = libraryManagerRepository.updateAvailableBooksById(1, library1, 3);
             Assert.assertEquals(1, result);
         } finally {
@@ -119,7 +119,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         try {
             bookRepository.add(book1);
             libraryRepository.add(library1.getName(), library1.getAddress());
-            libraryManagerRepository.addBookToLibrary(book1, library1, 60, 22);
+            libraryManagerRepository.addBookToLibrary(1, 1, 60, 22);
             int result = libraryManagerRepository.showAvailableBooksById(1, 1);
             Assert.assertEquals(22, result);
         } finally {

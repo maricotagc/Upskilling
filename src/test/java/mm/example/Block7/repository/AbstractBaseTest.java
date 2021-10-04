@@ -93,8 +93,8 @@ public abstract class AbstractBaseTest {
             bookRepository.add(book3);
             bookRepository.add(book4);
             bookRepository.add(book5);
-        } finally {
-            databaseManager.closeConnection();
+        } catch (Exception e) {
+            throw new Exception("It was not possible to create books.", e);
         }
     }
 
@@ -116,29 +116,49 @@ public abstract class AbstractBaseTest {
 
         try {
             libraryRepository.add(library1.getName(), library1.getAddress());
-//            libraryRepository.add(library2.getName(), library2.getAddress());
-//            libraryRepository.add(library3.getName(), library3.getAddress());
-//            libraryRepository.add(library4.getName(), library4.getAddress());
-//            libraryRepository.add(library5.getName(), library5.getAddress());
+            libraryRepository.add(library2.getName(), library2.getAddress());
+            libraryRepository.add(library3.getName(), library3.getAddress());
+            libraryRepository.add(library4.getName(), library4.getAddress());
+            libraryRepository.add(library5.getName(), library5.getAddress());
+        } catch (Exception e){
+            throw new Exception("It was not possible to create libraries.", e);
+        }
+    }
+
+    public void emptyAllTables(Connection connection) throws SQLException {
+        Statement statement = null;
+
+        try {
+            statement = connection.createStatement();
+            String emptyBookTable = "DELETE FROM book";
+            statement.executeUpdate(emptyBookTable);
+
+            String emptyLibraryTable = "DELETE FROM book";
+            statement.executeUpdate(emptyLibraryTable);
+
+            String emptyBookLibraryTable = "DELETE FROM book_library";
+            statement.executeUpdate(emptyBookLibraryTable);
+
+        } catch (Exception e) {
+            System.err.println(e.getClass().getName() + ": " + e.getMessage());
+            System.exit(0);
         } finally {
-            databaseManager.closeConnection();
+            statement.close();
         }
     }
 
     public void addManyBooksToManyLibraries() throws Exception {
-        createManyBooks();
-        createManyLibraries();
-
+            createManyBooks();
+            createManyLibraries();
         try {
-            libraryManagerRepository.addBookToLibrary(book1,library1,150,65);
-            libraryManagerRepository.addBookToLibrary(book2,library1,250,55);
-            libraryManagerRepository.addBookToLibrary(book3,library2,50,5);
-            libraryManagerRepository.addBookToLibrary(book4,library3,300,45);
-            libraryManagerRepository.addBookToLibrary(book5,library4,550,455);
-            libraryManagerRepository.addBookToLibrary(book5,library3,150,65);
-
-        } finally {
-            databaseManager.closeConnection();
+            libraryManagerRepository.addBookToLibrary(1, 1, 150, 65);
+            libraryManagerRepository.addBookToLibrary(2, 1, 250, 55);
+            libraryManagerRepository.addBookToLibrary(3, 2, 50, 5);
+            libraryManagerRepository.addBookToLibrary(4, 3, 300, 45);
+            libraryManagerRepository.addBookToLibrary(5, 4, 550, 455);
+            libraryManagerRepository.addBookToLibrary(5, 3, 150, 65);
+        } catch (Exception e) {
+            throw new Exception("It was not possible to add many books to the libraries.", e);
         }
     }
 
