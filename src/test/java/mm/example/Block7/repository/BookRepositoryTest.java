@@ -1,11 +1,14 @@
 package mm.example.Block7.repository;
 
 import mm.example.Block7.model.Book;
+import mm.example.Block7.model.Library;
 import mm.example.Block7.utils.DatabaseManager;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +27,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void shouldReturn1ForBookSuccessfullyAdded() throws Exception {
+    public void addNewBook() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
@@ -34,7 +37,8 @@ public class BookRepositoryTest extends AbstractBaseTest{
 
         try {
             bookRepository.add(book1);
-            Book actualBook = bookRepository.findById(1);
+            Book actualBook = bookRepository.findByBookName("Harry Potter and the Philosophers Stone");
+
             Assert.assertEquals("Harry Potter and the Philosophers Stone", actualBook.getName());
             Assert.assertEquals("J.K. Rowling", actualBook.getAuthor());
             Assert.assertEquals(1, actualBook.getId());
@@ -44,24 +48,22 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void shouldReturn1ForBookSuccessfullyRemoved() throws Exception {
+    public void removeBookByID() throws Exception {
+        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        Book book1 = new Book();
-        book1.setName("Harry Potter and the Philosophers Stone");
-        book1.setAuthor("J.K. Rowling");
+
         try {
-            bookRepository.add(book1);
-            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findById(1).getName());
+            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByBookName("Harry Potter and the Philosophers Stone").getName());
             Assert.assertEquals("Book was successfully removed from book table.", bookRepository.remove(1));
-            Assert.assertEquals(null, bookRepository.findById(1).getName());
+            Assert.assertEquals(null, bookRepository.findByBookName("Harry Potter and the Philosophers Stone").getName());
         } finally {
             databaseManager.closeConnection();
         }
     }
 
     @Test
-    public void viewAllBooks() throws Exception {
+    public void ShowAllBooksInShop() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
@@ -107,6 +109,42 @@ public class BookRepositoryTest extends AbstractBaseTest{
         } finally {
             databaseManager.closeConnection();
         }
+    }
+
+    @Test
+    public void findBookByName() throws Exception {
+        DatabaseManager databaseManager = new DatabaseManager();
+        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+
+        try {
+            Book book1 = new Book();
+            book1.setId(1);
+            book1.setName("Harry Potter and the Philosophers Stone");
+            book1.setAuthor("J.K. Rowling");
+            bookRepository.add(book1);
+
+            Book book = bookRepository.findByBookName("Harry Potter and the Philosophers Stone");
+            Assert.assertEquals("Harry Potter and the Philosophers Stone", book.getName());
+        } finally {
+            databaseManager.closeConnection();
+        }
+    }
+
+    @Test
+    public void testAbstract() throws Exception {
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+        createManyBooks();
+        Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByBookName("Harry Potter and the Philosophers Stone").getName());
+
+        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
+        createManyLibraries();
+        Assert.assertEquals("NEW YORK PUBLIC LIBRARY", libraryRepository.findById(1).getName());
+
+        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+        addManyBooksToManyLibraries();
+        Assert.assertEquals(65, libraryManagerRepository.showAvailableBooksById(1,1));
     }
 
 }

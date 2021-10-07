@@ -1,0 +1,138 @@
+Database Requirements:
+
+Table Book:
+- ID (auto-incremented)
+- Name
+_ Author
+
+Table Library
+- ID (auto-incremented)
+- Name
+- Address
+
+Table Book_Library
+- Book_Id (foreign key from Book table)
+- Library_Id (foreign key from Library table)
+- Total_Copies
+- Available_Copies
+
+Create Java project with JDBC connector and following methods:
+
+1. AddNewBook (add): DONE
+    Goal: inserts a new book into the database.
+    Table: book_repository
+    SQL: INSERT INTO book (name, author) VALUES (?,?)
+    Java Class: BookRepository
+
+2. RemoveBookByID (remove): DONE
+    Goal: removes a book, through its id, from the database.
+    Table: book_repository
+    SQL: DELETE FROM book WHERE id = ?;
+    Java Class: BookRepository
+
+3. ShowAllAvailableBooksInShop: DONE
+    Goal: show all available books in all libraries.
+    Table: book_library
+    SQL: SELECT book_id, library_id, available_copies FROM book_library WHERE available_copies > 0;
+    Java Class:
+
+4. ShowAllBooksInShop: DONE
+    Goal: shows all books within a specific library.
+    Table: book_library
+    SQL: SELECT available_copies FROM book_library where book_id = ? AND library_id = ?;
+    Java Class:
+5. SetNumberOfAvailableBookById: DONE
+    Goal: updates quantity of available books through book_id and library_id.
+    Table: book_library
+    SQL: UPDATE book_library SET available_copies = ? WHERE book_id = ? AND library_id = ?;
+    Java Class:
+6. RentBookByID: DONE
+    Goal: shows message that book is rented and subtracts one book from available_copies through book_id and library_id.
+    Table: book_library
+    SQL: UPDATE book_library SET available_copies = ? - 1 WHERE book_id = ? AND library_id = ?;
+    Java Class:
+7. RefundBookById: DONE
+    Goal: shows message that book is refunded and adds one book to available_copies through book_id and library_id.
+    Table: book_library
+    SQL: UPDATE book_library SET available_copies = ? + 1 WHERE book_id = ? AND library_id = ?";
+    Java Class:
+
+Extra methods created:
+1. findAll
+    Goal: to show all existent books
+    Table: book
+    SQL: SELECT id, name, author FROM book
+    Java Class: BookRepository
+    Unit Test:
+
+2. findById
+    Goal: to find a specific book through its id
+    Table: book
+    SQL: SELECT id, name, author FROM book WHERE id = ?;
+    Java Class: BookRepository
+    Unit Test:
+
+3. findByBookName
+    Goal: to find a specific book by its name
+    Table: book
+    SQL: SELECT id, name, author FROM book WHERE name like ?;
+    Java Class: BookRepository
+    Unit Test:
+
+4. addNewLibrary(add)
+    Goal: to create a new library
+    Table: library
+    SQL: INSERT INTO library (name, address) VALUES (?, ?);
+    Java Class: LibraryRepository
+    Unit Test:
+
+5. findById()
+    Goal: to find a specific library by its id
+    Table: library
+    SQL: SELECT id, name, address FROM library WHERE id = ?;
+    Java Class: libraryRepository
+    Unit Test:
+
+6. removeById()
+    Goal: to remove a specific library by its id
+    Table: library
+    SQL: DELETE FROM library WHERE id = ?";
+    Java Class: libraryRepository
+    Unit Test:
+
+7. update() -----> what is the difference between this method and
+    Goal: to update a specific library
+    Table: library
+    SQL: UPDATE library SET name = ?, address = ? WHERE id = ?;
+    Java Class: libraryRepository
+    Unit Test:
+
+8. addBookToLibrary
+    Goal: add a book and its availability to a specific library
+    Table: book_library
+    SQL: INSERT INTO book_library (book_id, library_id, total_copies, available_copies) VALUES (?, ?, ?, ?);
+    Java Class: LibraryManagerRepository
+    Unit Test:
+
+9. updateAvailableBooksById
+    Goal: to update the number of available copies of a specific book in a specific library
+    Table: book_library
+    SQL: UPDATE book_library SET available_copies = ? WHERE book_id = ? AND library_id = ?;
+    Java Class: LibraryManagerRepository
+    Unit Test:
+
+10. showAllAvailableBooks()
+    Goal: to show all available books contained in all libraries
+    Table: book_library
+    SQL: SELECT book_id, library_id, available_copies FROM book_library WHERE available_copies > 0;
+    Java Class: LibraryManagerRepository
+    Unit Test:
+
+
+Extra unit tests:
+
+1. Set number of book with value 5.
+2. Select any available book.
+3. Rent all books.
+4. Check number of  sold books.
+5. Check number of books after refund.
