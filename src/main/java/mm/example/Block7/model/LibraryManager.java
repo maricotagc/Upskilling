@@ -65,4 +65,11 @@ public class LibraryManager {
     public int hashCode() {return Objects.hash(bookId, libraryId, totalCopies, availableCopies);
 
     }
+
+    @Override
+    public String toString() {
+        return "LibraryManager{" +
+                "bookId=" + bookId + ", libraryId=" + libraryId + ", totalCopies=" + totalCopies + ", availableCopies=" + availableCopies +
+                '}';
+    }
 }

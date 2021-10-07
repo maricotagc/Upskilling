@@ -49,38 +49,18 @@ public class BookRepositoryTest extends AbstractBaseTest{
 
     @Test
     public void removeBookByID() throws Exception {
-//        createManyBooks();
-//        createManyLibraries();
-//        addManyBooksToManyLibraries();
-
+        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
         try {
-            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByBookName("Harry Potter and the Philosophers Stone"));
+            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByBookName("Harry Potter and the Philosophers Stone").getName());
             Assert.assertEquals("Book was successfully removed from book table.", bookRepository.remove(1));
-            Assert.assertEquals(null, bookRepository.findByBookName("Harry Potter and the Philosophers Stone"));
+            Assert.assertEquals(null, bookRepository.findByBookName("Harry Potter and the Philosophers Stone").getName());
         } finally {
             databaseManager.closeConnection();
         }
     }
-
-//    @Test
-//    public void removeBookByID() throws Exception {
-//        DatabaseManager databaseManager = new DatabaseManager();
-//        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-//        Book book1 = new Book();
-//        book1.setName("Harry Potter and the Philosophers Stone");
-//        book1.setAuthor("J.K. Rowling");
-//        try {
-//            bookRepository.add(book1);
-//            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findById(1).getName());
-//            Assert.assertEquals("Book was successfully removed from book table.", bookRepository.remove(1));
-//            Assert.assertEquals(null, bookRepository.findById(1).getName());
-//        } finally {
-//            databaseManager.closeConnection();
-//        }
-//    }
 
     @Test
     public void ShowAllBooksInShop() throws Exception {

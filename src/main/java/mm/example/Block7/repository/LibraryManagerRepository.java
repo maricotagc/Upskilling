@@ -1,6 +1,5 @@
 package mm.example.Block7.repository;
 
-import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
 import mm.example.Block7.model.LibraryManager;
 
@@ -24,8 +23,7 @@ public class LibraryManagerRepository {
         this.connection = connection;
     }
 
-    public int addBookToLibrary(int bookId, int libraryId
-            , int totalCopies, int availableCopies) throws Exception {
+    public int addBookToLibrary(int bookId, int libraryId, int totalCopies, int availableCopies) throws Exception {
         PreparedStatement preparedStatement = null;
         int result;
         try {
@@ -65,19 +63,16 @@ public class LibraryManagerRepository {
         return result;
     }
 
-    public List<LibraryManager> showAllAvailableBooks() throws Exception {
+    public String showAllAvailableBooks() throws Exception {
         PreparedStatement preparedStatement = null;
-        List<LibraryManager> libraryManagerList = new ArrayList<>();
+        StringBuilder stringBuilder = new StringBuilder();
 
         try {
             preparedStatement = connection.prepareStatement(SQL_SHOW_ALL_AVAILABLE_BOOKS);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                LibraryManager libraryManager = new LibraryManager();
-                libraryManager.setBookId(resultSet.getInt("book_id"));
-                libraryManager.setLibraryId(resultSet.getInt("library_id"));
-                libraryManager.setAvailableCopies(resultSet.getInt("available_copies"));
-                libraryManagerList.add(libraryManager);
+                stringBuilder.append("Book ID: " + resultSet.getInt("book_id") + " Library ID: " + resultSet.getInt("library_id") + " Available Copies: " + resultSet.getInt("available_copies"));
+                stringBuilder.append("\n");
             }
         } catch (Exception e) {
             throw new Exception("It was not possible to retrieve all available books from the database", e);
@@ -86,7 +81,7 @@ public class LibraryManagerRepository {
                 preparedStatement.close();
             }
         }
-        return libraryManagerList;
+        return String.valueOf(stringBuilder);
     }
 
     public int showAvailableBooksById(int bookId, int libraryId) throws Exception {
@@ -110,17 +105,17 @@ public class LibraryManagerRepository {
     public String rentBookById(int bookId, int libraryId) throws Exception {
         PreparedStatement preparedStatement;
         int availableBooks = showAvailableBooksById(bookId, libraryId);
-        String result = null;
+        String result;
 
         if (availableBooks > 0) {
-            result = "Book id " + " was successfully rented.";
+            result = "Book id " + bookId + " was successfully rented.";
             preparedStatement = connection.prepareStatement(SQL_REMOVE_ONE_AVAILABLE_BOOK_BY_ID);
             preparedStatement.setInt(1, availableBooks);
             preparedStatement.setInt(2, bookId);
             preparedStatement.setInt(3, libraryId);
             preparedStatement.executeUpdate();
         } else {
-            result = "Book id " + "was not successfully rented.";
+            result = "Book id " + bookId + "was not successfully rented.";
         }
         return result;
     }

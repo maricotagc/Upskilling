@@ -153,10 +153,10 @@ public abstract class AbstractBaseTest {
         try {
             libraryManagerRepository.addBookToLibrary(1, 1, 150, 65);
             libraryManagerRepository.addBookToLibrary(2, 1, 250, 55);
-            libraryManagerRepository.addBookToLibrary(3, 2, 50, 5);
-            libraryManagerRepository.addBookToLibrary(4, 3, 300, 45);
-            libraryManagerRepository.addBookToLibrary(5, 4, 550, 455);
-            libraryManagerRepository.addBookToLibrary(5, 3, 150, 65);
+//            libraryManagerRepository.addBookToLibrary(3, 2, 50, 5);
+//            libraryManagerRepository.addBookToLibrary(4, 3, 300, 45);
+//            libraryManagerRepository.addBookToLibrary(5, 4, 550, 455);
+//            libraryManagerRepository.addBookToLibrary(5, 3, 150, 65);
         } catch (Exception e) {
             throw new Exception("It was not possible to add many books to the libraries.", e);
         }
