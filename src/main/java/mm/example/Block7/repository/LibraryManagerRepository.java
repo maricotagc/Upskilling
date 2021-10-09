@@ -16,6 +16,7 @@ public class LibraryManagerRepository {
     private static final String SQL_SHOW_AVAILABLE_BOOKS_BY_IDS = "SELECT available_copies FROM book_library where book_id = ? AND library_id = ?;";
     private static final String SQL_REMOVE_ONE_AVAILABLE_BOOK_BY_ID = "UPDATE book_library SET available_copies = ? - 1 WHERE book_id = ? AND library_id = ?";
     private static final String SQL_ADD_ONE_AVAILABLE_BOOK_BY_ID = "UPDATE book_library SET available_copies = ? + 1 WHERE book_id = ? AND library_id = ?";
+    private static final String SQL_ALL_RENTED_BOOKS = "SELECT SUM(total_copies-available_copies) AS rented_copies FROM book_library;";
 
     private final Connection connection;
 
@@ -136,6 +137,22 @@ public class LibraryManagerRepository {
             result = "Book id " + "was not successfully refunded.";
         }
         return result;
+    }
+
+    public int showTotalOfRentedBooks() throws Exception {
+        int rentedBooks = 0;
+
+        try {
+            PreparedStatement preparedStatement;
+            preparedStatement = connection.prepareStatement(SQL_ALL_RENTED_BOOKS);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                rentedBooks = resultSet.getInt("rented_copies");
+            }
+        } catch (Exception e) {
+            throw new Exception("It was not possible to retrieve number of rented books");
+        }
+        return rentedBooks;
     }
 
 }

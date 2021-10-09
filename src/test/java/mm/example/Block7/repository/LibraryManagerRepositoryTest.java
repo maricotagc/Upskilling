@@ -131,9 +131,15 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
-
         Assert.assertEquals("Book id 1 was successfully rented.", libraryManagerRepository.rentBookById(1,1));
+    }
 
+    @Test
+    public void showTotalOfRentedBooks() throws Exception {
+        addManyBooksToManyLibraries();
+        DatabaseManager databaseManager = new DatabaseManager();
+        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+        Assert.assertEquals(280, libraryManagerRepository.showTotalOfRentedBooks());
     }
 
 }
