@@ -2,14 +2,10 @@ package mm.example.Block7.repository;
 
 import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
-import mm.example.Block7.model.LibraryManager;
 import mm.example.Block7.utils.DatabaseManager;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     @Before
@@ -94,7 +90,6 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         String er = stringBuilder.toString();
 
         Assert.assertEquals(er, libraryManagerRepository.showAllAvailableBooks());
-
     }
 
     @Test
@@ -140,6 +135,33 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         DatabaseManager databaseManager = new DatabaseManager();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
         Assert.assertEquals(280, libraryManagerRepository.showTotalOfRentedBooks());
+    }
+
+    @Test
+    public void refundBookById() throws Exception {
+        addManyBooksToManyLibraries();
+        DatabaseManager databaseManager = new DatabaseManager();
+        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+        Assert.assertEquals("Book id 1 was successfully refunded.", libraryManagerRepository.refundBookById(1,1));
+    }
+
+    @Test
+    public void showBooksAfterRefundBook() throws Exception {
+        addManyBooksToManyLibraries();
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("Book ID: 1 Library ID: 1 Available Copies: 66");
+        stringBuilder.append("\n");
+        stringBuilder.append("Book ID: 2 Library ID: 1 Available Copies: 55");
+        stringBuilder.append("\n");
+
+        String er = stringBuilder.toString();
+
+        Assert.assertEquals("Book id 1 was successfully refunded.", libraryManagerRepository.refundBookById(1,1));
+        Assert.assertEquals(er, libraryManagerRepository.showAllAvailableBooks());
     }
 
 }
