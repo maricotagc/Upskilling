@@ -127,14 +127,14 @@ public class LibraryManagerRepository {
         String result;
 
         if (availableBooks > 0) {
-            result = "Book id " + " was successfully refunded.";
+            result = "Book id " + bookId + " was successfully refunded.";
             preparedStatement = connection.prepareStatement(SQL_ADD_ONE_AVAILABLE_BOOK_BY_ID);
             preparedStatement.setInt(1, availableBooks);
             preparedStatement.setInt(2, bookId);
             preparedStatement.setInt(3, libraryId);
             preparedStatement.executeUpdate();
         } else {
-            result = "Book id " + "was not successfully refunded.";
+            result = "Book id " + bookId + "was not successfully refunded.";
         }
         return result;
     }
