@@ -27,7 +27,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void addNewBook() throws Exception {
+    public void shouldReturnIdNameAuthorOfAddedBook() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
@@ -48,7 +48,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void removeBookByID() throws Exception {
+    public void shouldReturnNullAfterBookRemoval() throws Exception {
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());

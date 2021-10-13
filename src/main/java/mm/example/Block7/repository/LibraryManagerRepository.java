@@ -1,13 +1,10 @@
 package mm.example.Block7.repository;
 
 import mm.example.Block7.model.Library;
-import mm.example.Block7.model.LibraryManager;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.List;
 
 public class LibraryManagerRepository {
     private static final String SQL_ADD_BOOK_TO_LIBRARY = "INSERT INTO book_library (book_id, library_id, total_copies, available_copies) VALUES (?, ?, ?, ?)";

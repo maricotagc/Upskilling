@@ -75,7 +75,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void showAllAvailableBooks() throws Exception {
+    public void shouldReturnStringWithAllAvailableBooks() throws Exception {
         addManyBooksToManyLibraries();
 
         DatabaseManager databaseManager = new DatabaseManager();
@@ -93,7 +93,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void showAvailableBooksById() throws Exception {
+    public void shouldReturn22AvailableBooksForBookIdAndLibraryId1() throws Exception {
         Book book1 = new Book();
         book1.setId(1);
         book1.setName("Harry Potter and the Philosophers Stone");
