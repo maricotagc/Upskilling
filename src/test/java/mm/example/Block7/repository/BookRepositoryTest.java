@@ -1,14 +1,11 @@
 package mm.example.Block7.repository;
 
 import mm.example.Block7.model.Book;
-import mm.example.Block7.model.Library;
 import mm.example.Block7.utils.DatabaseManager;
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -63,7 +60,7 @@ public class BookRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void ShowAllBooksInShop() throws Exception {
+    public void shouldReturnListOfAllBooks() throws Exception {
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
@@ -128,23 +125,6 @@ public class BookRepositoryTest extends AbstractBaseTest{
         } finally {
             databaseManager.closeConnection();
         }
-    }
-
-    @Test
-    public void testAbstract() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
-
-        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        createManyBooks();
-        Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByBookName("Harry Potter and the Philosophers Stone").getName());
-
-        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
-        createManyLibraries();
-        Assert.assertEquals("NEW YORK PUBLIC LIBRARY", libraryRepository.findById(1).getName());
-
-        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
-        addManyBooksToManyLibraries();
-        Assert.assertEquals(65, libraryManagerRepository.showAvailableBooksById(1,1));
     }
 
 }

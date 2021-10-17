@@ -47,7 +47,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void updateAvailableBooks() throws Exception {
+    public void shouldReturn5AfterUpdatingNumberOfAvailableCopies() throws Exception {
         Book book1 = new Book();
         book1.setId(1);
         book1.setName("Harry Potter and the Philosophers Stone");book1.setAuthor("'J.K. Rowling");
@@ -122,7 +122,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void rentBookById() throws Exception {
+    public void shouldReturnSuccessfulMessageAfterRentingOneBook() throws Exception {
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
@@ -130,7 +130,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void showTotalOfRentedBooks() throws Exception {
+    public void shouldReturn280RentedBooks() throws Exception {
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
@@ -138,7 +138,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void refundBookById() throws Exception {
+    public void shouldReturnSuccessfulMessageAfterBookRefund() throws Exception {
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
@@ -146,7 +146,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void showBooksAfterRefundBook() throws Exception {
+    public void shouldReturnStringWithBooksAvailableAfterBookRefund() throws Exception {
         addManyBooksToManyLibraries();
 
         DatabaseManager databaseManager = new DatabaseManager();
