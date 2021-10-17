@@ -89,7 +89,7 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
 
         String er = stringBuilder.toString();
 
-        Assert.assertEquals(er, libraryManagerRepository.showAllAvailableBooks());
+        Assert.assertEquals(er, libraryManagerRepository.showNameOfAllAvailableBooks());
     }
 
     @Test
@@ -161,7 +161,26 @@ public class LibraryManagerRepositoryTest extends AbstractBaseTest{
         String er = stringBuilder.toString();
 
         Assert.assertEquals("Book id 1 was successfully refunded.", libraryManagerRepository.refundBookById(1,1));
-        Assert.assertEquals(er, libraryManagerRepository.showAllAvailableBooks());
+        Assert.assertEquals(er, libraryManagerRepository.showNameOfAllAvailableBooks());
     }
+
+    @Test
+    public void shouldReturn0AvailableBooksAfterRentingAllBooks() throws Exception {
+        addManyBooksToManyLibraries();
+        DatabaseManager databaseManager = new DatabaseManager();
+
+        Library library1 = new Library();
+        library1.setId(1);
+        library1.setName("Shanghai Library");
+        library1.setAddress("1555 Huaihai Road, Xuhui District, Shanghai, China");
+
+        LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+        libraryManagerRepository.updateAvailableBooksById(1,library1,0);
+        libraryManagerRepository.updateAvailableBooksById(2,library1,0);
+
+        Assert.assertEquals(0, libraryManagerRepository.ShowNumberOfAllAvailableBooks());
+    }
+
+
 
 }
