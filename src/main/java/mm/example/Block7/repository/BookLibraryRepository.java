@@ -1,24 +1,36 @@
 package mm.example.Block7.repository;
 
+import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
 
-public class LibraryManagerRepository {
-    private static final String SQL_ADD_BOOK_TO_LIBRARY = "INSERT INTO book_library (book_id, library_id, total_copies, available_copies) VALUES (?, ?, ?, ?)";
-    private static final String SQL_UPDATE_AVAILABLE_BOOKS = "UPDATE book_library SET available_copies = ? WHERE book_id = ? AND library_id = ?";
-    private static final String SQL_SHOW_NAME_OF_ALL_AVAILABLE_BOOKS = "SELECT book_id, library_id, available_copies FROM book_library WHERE available_copies > 0;";
-    private static final String SQL_SHOW_NUMBER_OF_ALL_AVAILABLE_BOOKS = "SELECT available_copies FROM book_library WHERE available_copies > 0;";
-    private static final String SQL_SHOW_AVAILABLE_BOOKS_BY_IDS = "SELECT available_copies FROM book_library where book_id = ? AND library_id = ?;";
-    private static final String SQL_REMOVE_ONE_AVAILABLE_BOOK_BY_ID = "UPDATE book_library SET available_copies = ? - 1 WHERE book_id = ? AND library_id = ?";
-    private static final String SQL_ADD_ONE_AVAILABLE_BOOK_BY_ID = "UPDATE book_library SET available_copies = ? + 1 WHERE book_id = ? AND library_id = ?";
-    private static final String SQL_ALL_RENTED_BOOKS = "SELECT SUM(total_copies-available_copies) AS rented_copies FROM book_library;";
+public class BookLibraryRepository {
+    private static final String SQL_ADD_BOOK_TO_LIBRARY = "INSERT INTO book_library (book_id, library_id, " +
+            "total_copies, available_copies) VALUES (?, ?, ?, ?)";
+    private static final String SQL_UPDATE_AVAILABLE_BOOKS = "UPDATE book_library SET available_copies = ? WHERE " +
+            "book_id = ? AND library_id = ?";
+    private static final String SQL_SHOW_ALL_AVAILABLE_BOOKS_IN_LIBRARY = "SELECT distinct book.id, book.name, " +
+            "book.author FROM book JOIN book_library ON book.id = book_library.book_id JOIN library ON " +
+            "library.id = book_library.library_id WHERE book_library.available_copies > 0 AND library_id = ?";
+    private static final String SQL_SHOW_NUMBER_OF_ALL_AVAILABLE_BOOKS = "SELECT available_copies FROM book_library " +
+            "WHERE available_copies > 0;";
+    private static final String SQL_SHOW_AVAILABLE_BOOKS_BY_IDS = "SELECT available_copies FROM book_library WHERE " +
+            "book_id = ? AND library_id = ?;";
+    private static final String SQL_REMOVE_ONE_AVAILABLE_BOOK_BY_ID = "UPDATE book_library SET " +
+            "available_copies = ? - 1 WHERE book_id = ? AND library_id = ?";
+    private static final String SQL_ADD_ONE_AVAILABLE_BOOK_BY_ID = "UPDATE book_library SET available_copies = ? + 1 " +
+            "WHERE book_id = ? AND library_id = ?";
+    private static final String SQL_ALL_RENTED_BOOKS = "SELECT SUM(total_copies-available_copies) AS rented_copies " +
+            "FROM book_library;";
 
     private final Connection connection;
 
-    public LibraryManagerRepository(Connection connection) {
+    public BookLibraryRepository(Connection connection) {
         this.connection = connection;
     }
 
@@ -62,16 +74,20 @@ public class LibraryManagerRepository {
         return result;
     }
 
-    public String showNameOfAllAvailableBooks() throws Exception {
+    public List<Book> showAllAvailableBooksInLibrary(int libraryId) throws Exception {
         PreparedStatement preparedStatement = null;
-        StringBuilder stringBuilder = new StringBuilder();
+        List<Book> availableBooks = new ArrayList<>();
 
         try {
-            preparedStatement = connection.prepareStatement(SQL_SHOW_NAME_OF_ALL_AVAILABLE_BOOKS);
+            preparedStatement = connection.prepareStatement(SQL_SHOW_ALL_AVAILABLE_BOOKS_IN_LIBRARY);
+            preparedStatement.setInt(1, libraryId);
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                stringBuilder.append("Book ID: " + resultSet.getInt("book_id") + " Library ID: " + resultSet.getInt("library_id") + " Available Copies: " + resultSet.getInt("available_copies"));
-                stringBuilder.append("\n");
+                Book book = new Book();
+                book.setId(resultSet.getInt("id"));
+                book.setName(resultSet.getString("name"));
+                book.setAuthor(resultSet.getString("author"));
+                availableBooks.add(book);
             }
         } catch (Exception e) {
             throw new Exception("It was not possible to retrieve all available books from the database", e);
@@ -80,7 +96,7 @@ public class LibraryManagerRepository {
                 preparedStatement.close();
             }
         }
-        return String.valueOf(stringBuilder);
+        return availableBooks;
     }
 
     public int ShowNumberOfAllAvailableBooks() throws Exception {

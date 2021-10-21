@@ -32,7 +32,7 @@ public abstract class AbstractBaseTest {
 
     private BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
     LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
-    LibraryManagerRepository libraryManagerRepository = new LibraryManagerRepository(databaseManager.getConnection());
+    BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
 
     public void createTables(Connection connection) throws SQLException {
         Statement statement = null;
@@ -151,8 +151,8 @@ public abstract class AbstractBaseTest {
             createManyBooks();
             createManyLibraries();
         try {
-            libraryManagerRepository.addBookToLibrary(1, 1, 150, 65);
-            libraryManagerRepository.addBookToLibrary(2, 1, 250, 55);
+            bookLibraryRepository.addBookToLibrary(1, 1, 150, 65);
+            bookLibraryRepository.addBookToLibrary(2, 1, 250, 55);
         } catch (Exception e) {
             throw new Exception("It was not possible to add many books to the libraries.", e);
         }
