@@ -32,15 +32,18 @@ public class Library {
     }
 
     @Override
-    public boolean equals(Object o) {if (this == o) return true;if (!(o instanceof Library))
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Library))
 
-        return false;
+            return false;
         Library library = (Library) o;
         return id == library.id && Objects.equals(name, library.name) && Objects.equals(address, library.address);
     }
 
     @Override
-    public int hashCode() {return Objects.hash(id, name, address
-    );
+    public int hashCode() {
+        return Objects.hash(id, name, address
+        );
     }
 }

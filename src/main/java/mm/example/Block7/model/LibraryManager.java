@@ -2,6 +2,8 @@ package mm.example.Block7.model;
 
 import java.util.Objects;
 
+//is this class necessary?
+
 public class LibraryManager {
     private int bookId;
     private int libraryId;
@@ -54,15 +56,19 @@ public class LibraryManager {
     }
 
     @Override
-    public boolean equals(Object o) {if (this == o) return true;if (!(o instanceof LibraryManager)) return false;LibraryManager that = (
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LibraryManager)) return false;
+        LibraryManager that = (
 
 
-            LibraryManager) o;
+                LibraryManager) o;
         return bookId == that.bookId && libraryId == that.libraryId && totalCopies == that.totalCopies && availableCopies == that.availableCopies;
     }
 
     @Override
-    public int hashCode() {return Objects.hash(bookId, libraryId, totalCopies, availableCopies);
+    public int hashCode() {
+        return Objects.hash(bookId, libraryId, totalCopies, availableCopies);
 
     }
 

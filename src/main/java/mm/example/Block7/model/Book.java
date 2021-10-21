@@ -33,12 +33,26 @@ public class Book {
     }
 
     @Override
-    public boolean equals(Object o) {if (this == o) return true;if (!(o instanceof Book))
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Book))
 
-        return false;
+            return false;
         Book book = (Book) o;
         return id == book.id && name.equals(book.name) && author.equals(book.author);
     }
 
     @Override
-    public int hashCode() {return Objects.hash(id, name, author);    }}
+    public int hashCode() {
+        return Objects.hash(id, name, author);
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", author='" + author + '\'' +
+                '}';
+    }
+}
