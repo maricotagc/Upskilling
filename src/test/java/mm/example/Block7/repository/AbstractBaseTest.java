@@ -151,8 +151,8 @@ public abstract class AbstractBaseTest {
             createManyBooks();
             createManyLibraries();
         try {
-            bookLibraryRepository.addBookToLibrary(1, 1, 150, 65);
-            bookLibraryRepository.addBookToLibrary(2, 1, 250, 55);
+            bookLibraryRepository.addBook(1, 1, 150, 65);
+            bookLibraryRepository.addBook(2, 1, 250, 55);
         } catch (Exception e) {
             throw new Exception("It was not possible to add many books to the libraries.", e);
         }
