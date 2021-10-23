@@ -2,6 +2,7 @@ package mm.example.Block7.repository;
 
 import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
+import mm.example.Block7.service.BookLibraryService;
 import mm.example.Block7.utils.DatabaseManager;
 import org.junit.Assert;
 import org.junit.Before;
@@ -42,7 +43,7 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
         try {
             bookRepository.add(book1);
             libraryRepository.add(library1.getName(), library1.getAddress());
-            int result = bookLibraryRepository.addBookToLibrary(1, 1, 60, 22);
+            int result = bookLibraryRepository.addBook(1, 1, 60, 22);
             Assert.assertEquals(1, result);
         } finally {
             databaseManager.closeConnection();
@@ -69,9 +70,9 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
         try {
             bookRepository.add(book1);
             libraryRepository.add(library1.getName(), library1.getAddress());
-            bookLibraryRepository.addBookToLibrary(1, 2, 99, 99);
-            bookLibraryRepository.updateAvailableBooksById(1, library1, 5);
-            Assert.assertEquals(5, bookLibraryRepository.showAvailableBooksById(1,2));
+            bookLibraryRepository.addBook(1, 2, 99, 99);
+            bookLibraryRepository.updateAvailableBooks(1, library1.getId(), 5);
+            Assert.assertEquals(5, bookLibraryRepository.findAvailableCopies(1,2));
         } finally {
             databaseManager.closeConnection();
         }
@@ -98,7 +99,7 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
         er.add(book1);
         er.add(book2);
 
-        Assert.assertEquals(er, bookLibraryRepository.showAllAvailableBooksInLibrary(1));
+        Assert.assertEquals(er, bookLibraryRepository.findAllAvailableBooks(1));
     }
 
     @Test
@@ -122,8 +123,8 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
         try {
             bookRepository.add(book1);
             libraryRepository.add(library1.getName(), library1.getAddress());
-            bookLibraryRepository.addBookToLibrary(1, 1, 60, 22);
-            int result = bookLibraryRepository.showAvailableBooksById(1, 1);
+            bookLibraryRepository.addBook(1, 1, 60, 22);
+            int result = bookLibraryRepository.findAvailableCopies(1, 1);
             Assert.assertEquals(22, result);
         } finally {
             databaseManager.closeConnection();
@@ -131,11 +132,13 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
     }
 
     @Test
-    public void shouldReturnSuccessfulMessageAfterRentingOneBook() throws Exception {
+    public void shouldReturnAvailableCopiesAfterRentingBook() throws Exception {
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals("Book id 1 was successfully rented.", bookLibraryRepository.rentBookById(1,1));
+        BookLibraryService bookLibraryService = new BookLibraryService(bookLibraryRepository);
+        bookLibraryService.rentBook(1,1);
+        Assert.assertEquals(64, bookLibraryRepository.findAvailableCopies(1,1));
     }
 
     @Test
@@ -151,27 +154,10 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
         addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals("Book id 1 was successfully refunded.", bookLibraryRepository.refundBookById(1,1));
+        BookLibraryService bookLibraryService = new BookLibraryService(bookLibraryRepository);
+        bookLibraryService.returnBook(1,1);
+        Assert.assertEquals(66, bookLibraryRepository.findAvailableCopies(1,1));
     }
-
-//    @Test
-//    public void shouldReturnStringWithBooksAvailableAfterBookRefund() throws Exception {
-//        addManyBooksToManyLibraries();
-//
-//        DatabaseManager databaseManager = new DatabaseManager();
-//        BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-//
-//        StringBuilder stringBuilder = new StringBuilder();
-//        stringBuilder.append("Book ID: 1 Library ID: 1 Available Copies: 66");
-//        stringBuilder.append("\n");
-//        stringBuilder.append("Book ID: 2 Library ID: 1 Available Copies: 55");
-//        stringBuilder.append("\n");
-//
-//        String er = stringBuilder.toString();
-//
-//        Assert.assertEquals("Book id 1 was successfully refunded.", bookLibraryRepository.refundBookById(1,1));
-//        Assert.assertEquals(er, bookLibraryRepository.showAllAvailableBooksInLibrary(1));
-//    }
 
     @Test
     public void shouldReturn0AvailableBooksAfterRentingAllBooks() throws Exception {
@@ -184,10 +170,10 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest{
         library1.setAddress("1555 Huaihai Road, Xuhui District, Shanghai, China");
 
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        bookLibraryRepository.updateAvailableBooksById(1,library1,0);
-        bookLibraryRepository.updateAvailableBooksById(2,library1,0);
+        bookLibraryRepository.updateAvailableBooks(1,library1.getId(),0);
+        bookLibraryRepository.updateAvailableBooks(2,library1.getId(),0);
 
-        Assert.assertEquals(0, bookLibraryRepository.ShowNumberOfAllAvailableBooks());
+        Assert.assertEquals(0, bookLibraryRepository.findAllAvailableCopies());
     }
 
 
