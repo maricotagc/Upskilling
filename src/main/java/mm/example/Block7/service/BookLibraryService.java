@@ -6,8 +6,6 @@ import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
 import mm.example.Block7.repository.BookLibraryRepository;
 
-import java.sql.PreparedStatement;
-
 public class BookLibraryService {
     private BookLibraryRepository bookLibraryRepository;
 

@@ -1,10 +1,12 @@
 package mm.example.Block7.repository;
 
+import mm.example.Block7.exception.BookException;
 import mm.example.Block7.model.Book;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +23,17 @@ public class BookRepository {
         this.connection = connection;
     }
 
-    public int add(Book b) throws Exception {
+    public void close(Statement statement) {
+        try {
+            if (statement != null) {
+                statement.close();
+            }
+        } catch (Exception e) {
+            //
+        }
+    }
+
+    public int add(Book b) throws BookException {
         PreparedStatement preparedStatement = null;
         int result;
         try {
@@ -30,28 +42,24 @@ public class BookRepository {
             preparedStatement.setString(2, b.getAuthor());
             result = preparedStatement.executeUpdate();
         } catch (Exception exception) {
-            throw new Exception("It was not possible to add the book: " + b, exception);
+            throw new BookException("It was not possible to add the book: " + b);
         } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
+            close(preparedStatement);
         }
         return result;
     }
 
     public String remove(int bookId) throws Exception {
-        PreparedStatement stmt = null;
+        PreparedStatement preparedStatement = null;
         int result;
         try {
-            stmt = connection.prepareStatement(SQL_DELETE_BY_ID);
-            stmt.setInt(1, bookId);
-            result = stmt.executeUpdate();
+            preparedStatement = connection.prepareStatement(SQL_DELETE_BY_ID);
+            preparedStatement.setInt(1, bookId);
+            result = preparedStatement.executeUpdate();
         } catch (Exception e) {
             throw new Exception("It was not possible to remove the book with id = " + bookId + " from the database.", e);
         } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
+            close(preparedStatement);
         }
         return "Book was successfully removed from book table.";
     }
@@ -73,20 +81,18 @@ public class BookRepository {
         } catch (Exception e) {
             throw new Exception("It was not possible to find books", e);
         } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
+            close(preparedStatement);
         }
         return books;
     }
 
     public Book findById(int bookId) throws Exception {
-        PreparedStatement stmt = null;
+        PreparedStatement preparedStatement = null;
         Book book1 = new Book();
         try {
-            stmt = connection.prepareStatement(SQL_SELECT_BY_ID);
-            stmt.setInt(1, bookId);
-            ResultSet rs = stmt.executeQuery();
+            preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID);
+            preparedStatement.setInt(1, bookId);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 book1.setId(rs.getInt("id"));
                 book1.setName(rs.getString("name"));
@@ -95,20 +101,18 @@ public class BookRepository {
         } catch (Exception e) {
             throw new Exception("It was not possible to find book id = " + bookId, e);
         } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
+            close(preparedStatement);
         }
         return book1;
     }
 
-    public Book findByBookName(String bookName) throws Exception {
-        PreparedStatement stmt = null;
+    public Book findByBookName(String bookName) throws Exception           {
+        PreparedStatement preparedStatement = null;
         Book book1 = new Book();
         try {
-            stmt = connection.prepareStatement(SQL_SELECT_BY_BOOK_NAME);
-            stmt.setString(1, bookName);
-            ResultSet rs = stmt.executeQuery();
+            preparedStatement = connection.prepareStatement(SQL_SELECT_BY_BOOK_NAME);
+            preparedStatement.setString(1, bookName);
+            ResultSet rs = preparedStatement.executeQuery();
             while (rs.next()) {
                 book1.setId(rs.getInt("id"));
                 book1.setName(rs.getString("name"));
@@ -117,8 +121,8 @@ public class BookRepository {
         } catch (Exception e) {
             throw new Exception("It was not possible to find book by name = " + bookName, e);
         } finally {
-            if (stmt != null) {
-                stmt.close();
+            if (preparedStatement != null) {
+                preparedStatement.close();
             }
         }
         return book1;
