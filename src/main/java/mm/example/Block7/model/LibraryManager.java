@@ -2,8 +2,6 @@ package mm.example.Block7.model;
 
 import java.util.Objects;
 
-//is this class necessary?
-
 public class LibraryManager {
     private int bookId;
     private int libraryId;
