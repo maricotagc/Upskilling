@@ -6,9 +6,8 @@ import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
 import mm.example.Block7.repository.BookLibraryRepository;
 
-import java.sql.PreparedStatement;
-
 public class BookLibraryService {
+
     private BookLibraryRepository bookLibraryRepository;
 
     public BookLibraryService(BookLibraryRepository bookLibraryRepository) {
@@ -18,7 +17,6 @@ public class BookLibraryService {
     public void rentBook(Book book, Library library) throws BookLibraryException {
         try {
             int availableCopies = bookLibraryRepository.findAvailableCopies(book.getId(), library.getId());
-
             if (availableCopies == 0) {
                 throw new BookLibraryException("There are no available copies for renting. Book: " + book.getName());
             }
@@ -28,10 +26,9 @@ public class BookLibraryService {
         }
     }
 
-    public void rentBook(int bookId, int libraryId) throws Exception {
+    public void rentBook(int bookId, int libraryId) throws BookLibraryException {
         Book book = new Book();
         book.setId(bookId);
-
         Library library = new Library();
         library.setId(libraryId);
 
