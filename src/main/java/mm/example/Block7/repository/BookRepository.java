@@ -1,3 +1,5 @@
+//layer that connects the code to the repository (database) and has methods CRUD
+
 package mm.example.Block7.repository;
 
 import mm.example.Block7.exception.BookException;
@@ -29,7 +31,6 @@ public class BookRepository {
                 statement.close();
             }
         } catch (Exception e) {
-            //
         }
     }
 
@@ -147,7 +148,7 @@ public class BookRepository {
     public Book findByName(String bookName) throws BookException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-                Book book1 = new Book();
+        Book book1 = new Book();
         try {
             preparedStatement = connection.prepareStatement(SQL_SELECT_BY_BOOK_NAME);
             preparedStatement.setString(1, bookName);

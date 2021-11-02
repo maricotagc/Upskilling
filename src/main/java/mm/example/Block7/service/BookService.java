@@ -1,3 +1,5 @@
+//layer for user to take actions.
+
 package mm.example.Block7.service;
 
 import mm.example.Block7.exception.BookException;
@@ -13,7 +15,6 @@ public class BookService {
     }
 
     public void createBook(Book book) throws BookException  {
-
         try {
             if (!bookRepository.findBookById(book.getId())) {
                 bookRepository.create(book);
@@ -21,13 +22,6 @@ public class BookService {
         } catch (BookException e) {
             throw new BookException("It was not possible to create new book.");
         }
-    }
-
-    public void createBook(int bookId) throws BookException  {
-        Book book = new Book();
-        book.setId(bookId);
-
-        createBook(book);
     }
 
     public void removeBook(Book book) throws BookException  {
@@ -52,5 +46,17 @@ public class BookService {
         } catch (BookException e) {
             throw new BookException("It was not possible to remove book " + book.getName());
         }
+    }
+
+    public Book findById(int bookId) throws BookException {
+        Book book = new Book();
+        book.setId(bookId);
+
+        try {
+            book = bookRepository.findById(bookId);
+        } catch (BookException e) {
+            throw new BookException("It was not possible to find book with id " + bookId);
+        }
+        return book;
     }
 }

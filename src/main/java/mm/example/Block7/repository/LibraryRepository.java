@@ -1,3 +1,5 @@
+//layer that connects the code to the repository (database) and has methods CRUD
+
 package mm.example.Block7.repository;
 
 import mm.example.Block7.exception.LibraryException;
