@@ -46,4 +46,13 @@ public class Library {
         return Objects.hash(id, name, address
         );
     }
+
+    @Override
+    public String toString() {
+        return "Library{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                '}';
+    }
 }

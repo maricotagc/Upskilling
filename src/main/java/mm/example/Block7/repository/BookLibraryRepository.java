@@ -1,4 +1,4 @@
-//camada de dados que faz interface com o banco (insere, update, delete no banco).
+//layer that connects the code to the repository (database) and has methods CRUD
 package mm.example.Block7.repository;
 
 import mm.example.Block7.exception.BookLibraryRepositoryException;
@@ -13,7 +13,7 @@ import java.util.List;
 
 public class BookLibraryRepository {
 
-    private static final String SQL_ADD_BOOK_TO_LIBRARY =
+    private static final String SQL_INSERT_BOOK_INTO_LIBRARY =
             "INSERT INTO book_library (book_id, library_id, total_copies, available_copies) VALUES (?, ?, ?, ?)";
     private static final String SQL_UPDATE_AVAILABLE_BOOKS =
             "UPDATE book_library SET available_copies = ? WHERE book_id = ? AND library_id = ?";
@@ -23,10 +23,14 @@ public class BookLibraryRepository {
             "SELECT available_copies FROM book_library WHERE book_id = ? AND library_id = ?";
     private static final String SQL_ALL_RENTED_BOOKS =
             "SELECT SUM(total_copies-available_copies) AS rented_copies FROM book_library";
-    private static final String SQL_SHOW_ALL_AVAILABLE_BOOKS_IN_LIBRARY =
+    private static final String SQL_SELECT_ALL_AVAILABLE_BOOKS_IN_LIBRARY =
             "SELECT distinct book.id, book.name, book.author FROM book JOIN book_library " +
                     "ON book.id = book_library.book_id JOIN library ON library.id = book_library.library_id " +
                     "WHERE book_library.available_copies > 0 AND library_id = ?";
+    private static final String SQL_SELECT_ALL_BOOKS_IN_LIBRARY =
+            "SELECT distinct book.id, book.name, book.author FROM book JOIN book_library " +
+                    "ON book.id = book_library.book_id JOIN library ON library.id = book_library.library_id " +
+                    "WHERE library_id = ?";
 
     private final Connection connection;
 
@@ -58,7 +62,7 @@ public class BookLibraryRepository {
         PreparedStatement preparedStatement = null;
         int result;
         try {
-            preparedStatement = connection.prepareStatement(SQL_ADD_BOOK_TO_LIBRARY);
+            preparedStatement = connection.prepareStatement(SQL_INSERT_BOOK_INTO_LIBRARY);
             preparedStatement.setInt(1, bookId);
             preparedStatement.setInt(2, libraryId);
             preparedStatement.setInt(3, totalCopies);
@@ -72,7 +76,7 @@ public class BookLibraryRepository {
         return result;
     }
 
-    public int updateAvailableBooks(int bookId, int libraryId, int availableCopies) throws BookLibraryRepositoryException {
+    public int updateAvailableCopies(int bookId, int libraryId, int availableCopies) throws BookLibraryRepositoryException {
         PreparedStatement preparedStatement = null;
         int result;
 
@@ -97,7 +101,7 @@ public class BookLibraryRepository {
         List<Book> availableBooks = new ArrayList<>();
 
         try {
-            preparedStatement = connection.prepareStatement(SQL_SHOW_ALL_AVAILABLE_BOOKS_IN_LIBRARY);
+            preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_AVAILABLE_BOOKS_IN_LIBRARY);
             preparedStatement.setInt(1, libraryId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
@@ -159,7 +163,7 @@ public class BookLibraryRepository {
         return availableCopies;
     }
 
-    public int showTotalOfRentedBooks() throws BookLibraryRepositoryException {
+    public int findTotalRentedBooks() throws BookLibraryRepositoryException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
         int rentedBooks = 0;
@@ -177,5 +181,31 @@ public class BookLibraryRepository {
             close(preparedStatement);
         }
         return rentedBooks;
+    }
+
+    public List<Book> findAllBooksInLibrary(int libraryId) throws BookLibraryRepositoryException {
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        List<Book> availableBooks = new ArrayList<>();
+
+        try {
+            preparedStatement = connection.prepareStatement(SQL_SELECT_ALL_BOOKS_IN_LIBRARY);
+            preparedStatement.setInt(1, libraryId);
+            resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                Book book = new Book();
+                book.setId(resultSet.getInt("id"));
+                book.setName(resultSet.getString("name"));
+                book.setAuthor(resultSet.getString("author"));
+                availableBooks.add(book);
+            }
+        } catch (Exception e) {
+            // log exception
+            throw new BookLibraryRepositoryException("It was not possible to retrieve all books in this library from the database");
+        } finally {
+            close(resultSet);
+            close(preparedStatement);
+        }
+        return availableBooks;
     }
 }

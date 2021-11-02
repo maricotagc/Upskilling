@@ -1,7 +1,10 @@
-package mm.example.Block7.repository;
+package mm.example.Block7;
 
 import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
+import mm.example.Block7.repository.BookLibraryRepository;
+import mm.example.Block7.repository.BookRepository;
+import mm.example.Block7.repository.LibraryRepository;
 import mm.example.Block7.utils.DatabaseManager;
 
 import java.sql.Connection;
@@ -88,11 +91,11 @@ public abstract class AbstractBaseTest {
         book5.setAuthor("J.K. Rowling");
 
         try {
-            bookRepository.add(book1);
-            bookRepository.add(book2);
-            bookRepository.add(book3);
-            bookRepository.add(book4);
-            bookRepository.add(book5);
+            bookRepository.create(book1);
+            bookRepository.create(book2);
+            bookRepository.create(book3);
+            bookRepository.create(book4);
+            bookRepository.create(book5);
         } catch (Exception e) {
             throw new Exception("It was not possible to create books.", e);
         }
@@ -115,35 +118,13 @@ public abstract class AbstractBaseTest {
         library5.setAddress("1 Chome-10-1 Nagatachō, Chiyoda City, Tokyo 100-8924, Japan");
 
         try {
-            libraryRepository.add(library1.getName(), library1.getAddress());
-            libraryRepository.add(library2.getName(), library2.getAddress());
-            libraryRepository.add(library3.getName(), library3.getAddress());
-            libraryRepository.add(library4.getName(), library4.getAddress());
-            libraryRepository.add(library5.getName(), library5.getAddress());
+            libraryRepository.create(library1.getName(), library1.getAddress());
+            libraryRepository.create(library2.getName(), library2.getAddress());
+            libraryRepository.create(library3.getName(), library3.getAddress());
+            libraryRepository.create(library4.getName(), library4.getAddress());
+            libraryRepository.create(library5.getName(), library5.getAddress());
         } catch (Exception e){
             throw new Exception("It was not possible to create libraries.", e);
-        }
-    }
-
-    public void emptyAllTables(Connection connection) throws SQLException {
-        Statement statement = null;
-
-        try {
-            statement = connection.createStatement();
-            String emptyBookTable = "DELETE FROM book";
-            statement.executeUpdate(emptyBookTable);
-
-            String emptyLibraryTable = "DELETE FROM book";
-            statement.executeUpdate(emptyLibraryTable);
-
-            String emptyBookLibraryTable = "DELETE FROM book_library";
-            statement.executeUpdate(emptyBookLibraryTable);
-
-        } catch (Exception e) {
-            System.err.println(e.getClass().getName() + ": " + e.getMessage());
-            System.exit(0);
-        } finally {
-            statement.close();
         }
     }
 
