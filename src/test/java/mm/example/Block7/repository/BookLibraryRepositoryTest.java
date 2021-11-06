@@ -25,21 +25,20 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void addBookToLibrary() throws Exception {
+        DatabaseManager databaseManager = new DatabaseManager();
+        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
+        BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
+
         Book book1 = new Book();
         book1.setId(1);
         book1.setName("Harry Potter and the Philosophers Stone");
         book1.setAuthor("'J.K. Rowling");
 
         Library library1 = new Library();
-        library1.setId(2);
+        library1.setId(1);
         library1.setName("Shanghai Library");
         library1.setAddress("1555 Huaihai Road, Xuhui District, Shanghai, China");
-
-        DatabaseManager databaseManager = new DatabaseManager();
-
-        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
-        BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
 
         try {
             bookRepository.create(book1);
@@ -81,8 +80,6 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldReturnListOfAvailableBooksInLibrary() throws Exception {
-        addManyBooksToManyLibraries();
-
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
 
@@ -134,7 +131,6 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldReturnAvailableCopiesAfterRentingBook() throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
         BookLibraryService bookLibraryService = new BookLibraryService(bookLibraryRepository);
@@ -144,7 +140,6 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldReturn280RentedBooks() throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
         Assert.assertEquals(280, bookLibraryRepository.findTotalRentedBooks());
@@ -152,7 +147,6 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldReturnSuccessfulMessageAfterBookRefund() throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
         BookLibraryService bookLibraryService = new BookLibraryService(bookLibraryRepository);
@@ -162,7 +156,6 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldReturn0AvailableBooksAfterRentingAllBooks() throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
 
         Library library1 = new Library();
@@ -179,8 +172,6 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void findAllBooksInLibrary() throws Exception {
-        addManyBooksToManyLibraries();
-
         DatabaseManager databaseManager = new DatabaseManager();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
 

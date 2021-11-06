@@ -43,6 +43,15 @@ public class BookServiceTest extends AbstractBaseTest {
         };
     }
 
+    @DataProvider
+    public static Object[][] bookNames() {
+        return new Object[][]{
+                {"Harry Potter and the Philosophers Stones"},
+                {"Harry Potter and the Chamber of Secrets"},
+                {"Harry Potter and the Prisoner of Azkaban"}
+        };
+    }
+
     @Test
     @UseDataProvider("bookData")
     public void createBook(String bookName, String bookAuthor) throws Exception {
@@ -69,7 +78,6 @@ public class BookServiceTest extends AbstractBaseTest {
 
     @Test
     public void removeBook() throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
         BookService bookService = new BookService(bookRepository);
@@ -90,7 +98,6 @@ public class BookServiceTest extends AbstractBaseTest {
 
     @Test
     public void removeBookById() throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
         BookService bookService = new BookService(bookRepository);
@@ -112,7 +119,6 @@ public class BookServiceTest extends AbstractBaseTest {
     @Test
     @UseDataProvider("booksIds")
     public void findBookById(int bookId) throws Exception {
-        addManyBooksToManyLibraries();
         DatabaseManager databaseManager = new DatabaseManager();
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
         BookService bookService = new BookService(bookRepository);
@@ -126,5 +132,25 @@ public class BookServiceTest extends AbstractBaseTest {
             databaseManager.closeConnection();
         }
     }
+
+    @Test
+    @UseDataProvider("bookNames")
+    public void findBookByName(String bookName) throws Exception {
+
+
+        DatabaseManager databaseManager = new DatabaseManager();
+        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+        BookService bookService = new BookService(bookRepository);
+
+        Book expectedBook = new Book();
+        expectedBook.setName(bookName);
+
+        try {
+            Assert.assertEquals(expectedBook.getName(), bookService.findByName(bookName).getName());
+        } finally {
+            databaseManager.closeConnection();
+        }
+    }
+
 
 }
