@@ -7,36 +7,14 @@ import mm.example.Block7.model.Library;
 
 import java.sql.*;
 
-public class LibraryRepository {
+public class LibraryRepository extends AbstractRepository {
     private static final String SQL_INSERT = "INSERT INTO library (name, address) VALUES (?, ?)";
-    private static final String SQL_SELECT_BY_ID = "SELECT id, name, address FROM library WHERE id = ?";
+    private static final String SQL_SELECT_BY_ID = "SELECT COUNT(*) AS count FROM library WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM library WHERE id = ?";
     private static final String SQL_UPDATE_BY_ID = "UPDATE library SET name = ?, address = ? WHERE id = ?";
 
-    private final Connection connection;
-
     public LibraryRepository(Connection connection) {
-        this.connection = connection;
-    }
-
-    public void close(Statement statement) {
-        try {
-            if (statement != null) {
-                statement.close();
-            }
-        } catch (Exception e) {
-            //
-        }
-    }
-
-    public void close(ResultSet resultSet) {
-        try {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-        } catch (Exception e) {
-            //
-        }
+        super(connection);
     }
 
     public int create(String libraryName, String libraryAddress) throws LibraryException {
@@ -59,13 +37,14 @@ public class LibraryRepository {
     public Library find(int libraryId) throws LibraryException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Library library = new Library();
+        Library library = null;
 
         try {
             preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID);
             preparedStatement.setInt(1, libraryId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+                library = new Library();
                 library.setId(resultSet.getInt("id"));
                 library.setName(resultSet.getString("name"));
                 library.setAddress(resultSet.getString("address"));
@@ -82,14 +61,14 @@ public class LibraryRepository {
     public boolean findById(int libraryId) throws LibraryException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        boolean result = false;
+        int result = 0;
 
         try {
             preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID);
             preparedStatement.setInt(1, libraryId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result = true;
+                result = resultSet.getInt("count");
             }
         } catch (Exception e) {
             throw new LibraryException("It was not possible to find library with id = " + libraryId);
@@ -97,7 +76,7 @@ public class LibraryRepository {
             close(resultSet);
             close(preparedStatement);
         }
-        return result;
+        return result > 0;
     }
 
     public int remove(int libraryId) throws LibraryException {

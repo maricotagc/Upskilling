@@ -1,8 +1,10 @@
 package mm.example.Block7.repository;
 
 import mm.example.Block7.AbstractBaseTest;
+import mm.example.Block7.exception.BookException;
 import mm.example.Block7.model.Book;
 import mm.example.Block7.utils.DatabaseManager;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,19 +16,47 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class BookRepositoryTest extends AbstractBaseTest {
 
+    DatabaseManager databaseManager;
+
     @Before
-    public void setUp() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
+    public void tearUp() throws Exception {
+        databaseManager = new DatabaseManager();
+        createTables(databaseManager.getConnection());
+    }
+
+    public void createTestData() throws Exception {
+        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+
+        Book book1;
+        book1 = new Book();
+        book1.setName("BOOK_A");
+        book1.setAuthor("AUTHOR_A");
+
+        Book book2;
+        book2 = new Book();
+        book2.setName("BOOK_B");
+        book2.setAuthor("AUTHOR_B");
+
         try {
-            createTables(databaseManager.getConnection());
-        } finally {
-            databaseManager.closeConnection();
+            bookRepository.create(book1);
+            bookRepository.create(book2);
+        } catch (Exception e) {
+            throw new Exception("It was not possible to create books.", e);
+        }
+    }
+
+    public void removeTestData() {
+        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+        try {
+            bookRepository.remove(1);
+            bookRepository.remove(2);
+        } catch (BookException e) {
+            e.getMessage();
         }
     }
 
     @Test
-    public void shouldReturnIdNameAuthorOfAddedBook() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
+    public void shouldCreateBook() throws Exception {
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
 
         Book book1 = new Book();
@@ -46,37 +76,34 @@ public class BookRepositoryTest extends AbstractBaseTest {
     }
 
     @Test
-    public void shouldReturnNullAfterBookRemoval() throws Exception {
-        addManyBooksToManyLibraries();
-        DatabaseManager databaseManager = new DatabaseManager();
+    public void shouldRemoveBook() throws Exception {
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-
+        createTestData();
         try {
-            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByName("Harry Potter and the Philosophers Stone").getName());
-            Assert.assertEquals("Book was successfully removed from book table.", bookRepository.remove(1));
-            Assert.assertEquals(null, bookRepository.findByName("Harry Potter and the Philosophers Stone").getName());
+            Assert.assertEquals("BOOK_A", bookRepository.findByName("BOOK_A").getName());
+            Assert.assertEquals(1, bookRepository.remove(1));
+            Assert.assertEquals(null, bookRepository.findByName("BOOK_A").getName());
         } finally {
+            removeTestData();
             databaseManager.closeConnection();
         }
     }
 
     @Test
-    public void shouldReturnListOfAllBooks() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
+    public void shouldFindAllBooks() throws Exception {
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
+        createTestData();
 
         try {
             Book book1 = new Book();
             book1.setId(1);
-            book1.setName("Harry Potter and the Philosophers Stone");
-            book1.setAuthor("J.K. Rowling");
-            bookRepository.create(book1);
+            book1.setName("BOOK_A");
+            book1.setAuthor("AUTHOR_A");
 
             Book book2 = new Book();
             book2.setId(2);
-            book2.setName("Harry Potter and the Chamber of Secrets");
-            book2.setAuthor("J.K. Rowling");
-            bookRepository.create(book2);
+            book2.setName("BOOK_B");
+            book2.setAuthor("AUTHOR_B");
 
             List<Book> expected = new ArrayList<>();
             expected.add(book1);
@@ -86,44 +113,29 @@ public class BookRepositoryTest extends AbstractBaseTest {
             assertThat(expected).hasSameElementsAs(actual);
 
         } finally {
-            databaseManager.closeConnection();
+            removeTestData();
         }
     }
 
     @Test
-    public void findBookById() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
+    public void shouldFindBookById() throws Exception {
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-
-        try {
-            Book book1 = new Book();
-            book1.setId(1);
-            book1.setName("Harry Potter and the Philosophers Stone");
-            book1.setAuthor("J.K. Rowling");
-            bookRepository.create(book1);
-            Assert.assertEquals(true, bookRepository.findBookById(1));
-        } finally {
-            databaseManager.closeConnection();
-        }
+        createTestData();
+        Assert.assertTrue(bookRepository.existsBook(1));
+        Assert.assertTrue(bookRepository.existsBook(2));
+        Assert.assertFalse(bookRepository.existsBook(3));
     }
 
     @Test
-    public void findBookByName() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
+    public void shouldFindBookByName() throws Exception {
         BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-
-        try {
-            Book book1 = new Book();
-            book1.setId(1);
-            book1.setName("Harry Potter and the Philosophers Stone");
-            book1.setAuthor("J.K. Rowling");
-            bookRepository.create(book1);
-
-            Book book = bookRepository.findByName("Harry Potter and the Philosophers Stone");
-            Assert.assertEquals("Harry Potter and the Philosophers Stone", book.getName());
-        } finally {
-            databaseManager.closeConnection();
-        }
+        createTestData();
+        Assert.assertEquals("BOOK_A", bookRepository.findByName("BOOK_A").getName());
+        removeTestData();
     }
 
+    @After
+    public void tearDown() {
+        databaseManager.closeConnection();
+    }
 }

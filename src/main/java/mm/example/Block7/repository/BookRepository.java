@@ -8,40 +8,19 @@ import mm.example.Block7.model.Book;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookRepository {
+public class BookRepository extends AbstractRepository {
     private static final String SQL_INSERT = "INSERT INTO book (name, author) VALUES (?,?)";
     private static final String SQL_SELECT_ALL = "SELECT id, name, author FROM book";
     private static final String SQL_SELECT_BY_ID = "SELECT id, name, author FROM book WHERE id = ?";
+    private static final String SQL_COUNT_BY_ID = "SELECT COUNT(*) AS count FROM book WHERE id = ?";
     private static final String SQL_DELETE_BY_ID = "DELETE FROM book WHERE id = ?";
-    private static final String SQL_SELECT_BY_BOOK_NAME = "SELECT id, name, author FROM book WHERE name like ?";
-
-    private final Connection connection;
+    private static final String SQL_SELECT_BY_BOOK_NAME = "SELECT id, name, author FROM book WHERE name = ?";
 
     public BookRepository(Connection connection) {
-        this.connection = connection;
-    }
-
-    public void close(Statement statement) {
-        try {
-            if (statement != null) {
-                statement.close();
-            }
-        } catch (Exception e) {
-        }
-    }
-
-    public void close(ResultSet resultSet) {
-        try {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-        } catch (Exception e) {
-            //
-        }
+        super(connection);
     }
 
     public int create(Book b) throws BookException {
@@ -54,6 +33,7 @@ public class BookRepository {
             preparedStatement.setString(2, b.getAuthor());
             result = preparedStatement.executeUpdate();
         } catch (Exception exception) {
+            System.err.println(exception);
             throw new BookException("It was not possible to add the book: " + b);
         } finally {
             close(preparedStatement);
@@ -104,13 +84,14 @@ public class BookRepository {
     public Book findById(int bookId) throws BookException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Book book1 = new Book();
+        Book book1 = null;
 
         try {
             preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID);
             preparedStatement.setInt(1, bookId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+                book1 = new Book();
                 book1.setId(resultSet.getInt("id"));
                 book1.setName(resultSet.getString("name"));
                 book1.setAuthor(resultSet.getString("author"));
@@ -124,17 +105,17 @@ public class BookRepository {
         return book1;
     }
 
-    public boolean findBookById(int bookId) throws BookException {
+    public boolean existsBook(int bookId) throws BookException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        boolean result = false;
+        int result = 0;
 
         try {
-            preparedStatement = connection.prepareStatement(SQL_SELECT_BY_ID);
+            preparedStatement = connection.prepareStatement(SQL_COUNT_BY_ID);
             preparedStatement.setInt(1, bookId);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
-                result = true;
+                result = resultSet.getInt("count");
             }
         } catch (Exception e) {
             throw new BookException("It was not possible to find book id = " + bookId);
@@ -142,7 +123,7 @@ public class BookRepository {
             close(resultSet);
             close(preparedStatement);
         }
-        return result;
+        return result > 0;
     }
 
     public Book findByName(String bookName) throws BookException {

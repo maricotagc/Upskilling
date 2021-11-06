@@ -7,11 +7,10 @@ import mm.example.Block7.model.Book;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookLibraryRepository {
+public class BookLibraryRepository extends AbstractRepository {
 
     private static final String SQL_INSERT_BOOK_INTO_LIBRARY =
             "INSERT INTO book_library (book_id, library_id, total_copies, available_copies) VALUES (?, ?, ?, ?)";
@@ -22,40 +21,18 @@ public class BookLibraryRepository {
     private static final String SQL_FIND_NUMBER_AVAILABLE_BOOKS =
             "SELECT available_copies FROM book_library WHERE book_id = ? AND library_id = ?";
     private static final String SQL_ALL_RENTED_BOOKS =
-            "SELECT SUM(total_copies-available_copies) AS rented_copies FROM book_library";
+            "SELECT SUM(total_copies - available_copies) AS rented_copies FROM book_library";
     private static final String SQL_SELECT_ALL_AVAILABLE_BOOKS_IN_LIBRARY =
-            "SELECT distinct book.id, book.name, book.author FROM book JOIN book_library " +
-                    "ON book.id = book_library.book_id JOIN library ON library.id = book_library.library_id " +
-                    "WHERE book_library.available_copies > 0 AND library_id = ?";
+            "SELECT b.id, b.name, b.author FROM book b JOIN book_library bl " +
+                    "ON b.id = bl.book_id JOIN library l ON l.id = bl.library_id " +
+                    "WHERE bl.available_copies > 0 AND library_id = ?";
     private static final String SQL_SELECT_ALL_BOOKS_IN_LIBRARY =
-            "SELECT distinct book.id, book.name, book.author FROM book JOIN book_library " +
-                    "ON book.id = book_library.book_id JOIN library ON library.id = book_library.library_id " +
-                    "WHERE library_id = ?";
-
-    private final Connection connection;
+            "SELECT b.id, b.name, b.author FROM book b JOIN book_library bl " +
+                    "ON b.id = bl.book_id JOIN library l ON l.id = bl.library_id " +
+                    "WHERE bl.library_id = ?";
 
     public BookLibraryRepository(Connection connection) {
-        this.connection = connection;
-    }
-
-    private void close(Statement statement) {
-        try {
-            if (statement != null) {
-                statement.close();
-            }
-        } catch (Exception e) {
-            //TODO add log
-        }
-    }
-
-    private void close(ResultSet resultSet) {
-        try {
-            if (resultSet != null) {
-                resultSet.close();
-            }
-        } catch (Exception e) {
-            //TODO add log
-        }
+        super(connection);
     }
 
     public int addBook(int bookId, int libraryId, int totalCopies, int availableCopies) throws BookLibraryRepositoryException {

@@ -16,7 +16,7 @@ public class BookService {
 
     public void createBook(Book book) throws BookException  {
         try {
-            if (!bookRepository.findBookById(book.getId())) {
+            if (!bookRepository.existsBook(book.getId())) {
                 bookRepository.create(book);
             }
         } catch (BookException e) {
@@ -27,7 +27,7 @@ public class BookService {
     public void removeBook(Book book) throws BookException  {
 
         try {
-            if (bookRepository.findBookById(book.getId())) {
+            if (bookRepository.existsBook(book.getId())) {
                 bookRepository.remove(book.getId());
             }
         } catch (BookException e) {
@@ -40,7 +40,7 @@ public class BookService {
         book.setId(bookId);
 
         try {
-            if (bookRepository.findBookById(book.getId())) {
+            if (bookRepository.existsBook(book.getId())) {
                 bookRepository.remove(book.getId());
             }
         } catch (BookException e) {
@@ -49,14 +49,18 @@ public class BookService {
     }
 
     public Book findById(int bookId) throws BookException {
-        Book book = new Book();
-        book.setId(bookId);
-
         try {
-            book = bookRepository.findById(bookId);
+            return bookRepository.findById(bookId);
         } catch (BookException e) {
             throw new BookException("It was not possible to find book with id " + bookId);
         }
-        return book;
+    }
+
+    public Book findByName(String bookName) throws BookException {
+        try {
+            return bookRepository.findByName(bookName);
+        } catch (BookException e) {
+            throw new BookException("It was not possible to find book by name = " + bookName);
+        }
     }
 }
