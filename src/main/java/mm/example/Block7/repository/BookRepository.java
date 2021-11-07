@@ -129,12 +129,13 @@ public class BookRepository extends AbstractRepository {
     public Book findByName(String bookName) throws BookException {
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        Book book1 = new Book();
+        Book book1 = null;
         try {
             preparedStatement = connection.prepareStatement(SQL_SELECT_BY_BOOK_NAME);
             preparedStatement.setString(1, bookName);
             resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
+                book1 = new Book();
                 book1.setId(resultSet.getInt("id"));
                 book1.setName(resultSet.getString("name"));
                 book1.setAuthor(resultSet.getString("author"));

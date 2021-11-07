@@ -53,7 +53,7 @@ public class BookLibraryRepository extends AbstractRepository {
         return result;
     }
 
-    public int updateAvailableCopies(int bookId, int libraryId, int availableCopies) throws BookLibraryRepositoryException {
+    public int updateAvailableCopies(int availableCopies, int bookId, int libraryId) throws BookLibraryRepositoryException {
         PreparedStatement preparedStatement = null;
         int result;
 
