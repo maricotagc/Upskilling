@@ -14,14 +14,17 @@ public class BookService {
         this.bookRepository = bookRepository;
     }
 
-    public void createBook(Book book) throws BookException  {
+    public boolean createBook(Book book) throws BookException  {
         try {
-            if (!bookRepository.existsBook(book.getId())) {
-                bookRepository.create(book);
+            Book book1 = bookRepository.findByName(book.getName());
+            if (book1 == null) {
+                int i = bookRepository.create(book);
+                return i > 0;
             }
         } catch (BookException e) {
             throw new BookException("It was not possible to create new book.");
         }
+        return false;
     }
 
     public void removeBook(Book book) throws BookException  {

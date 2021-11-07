@@ -9,7 +9,7 @@ import java.sql.*;
 
 public class LibraryRepository extends AbstractRepository {
     private static final String SQL_INSERT = "INSERT INTO library (name, address) VALUES (?, ?)";
-    private static final String SQL_SELECT_BY_ID = "SELECT COUNT(*) AS count FROM library WHERE id = ?";
+    private static final String SQL_SELECT_BY_ID = "SELECT id, name, address FROM library WHERE id = ?";
     private static final String SQL_DELETE = "DELETE FROM library WHERE id = ?";
     private static final String SQL_UPDATE_BY_ID = "UPDATE library SET name = ?, address = ? WHERE id = ?";
 
