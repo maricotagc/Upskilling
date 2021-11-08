@@ -18,8 +18,7 @@ public class BookService {
         try {
             Book book1 = bookRepository.findByName(book.getName());
             if (book1 == null) {
-                int i = bookRepository.create(book);
-                return i > 0;
+                return bookRepository.create(book) > 0;
             }
         } catch (BookException e) {
             throw new BookException("It was not possible to create new book.");
@@ -27,15 +26,15 @@ public class BookService {
         return false;
     }
 
-    public void removeBook(Book book) throws BookException  {
-
+    public boolean removeBook(Book book) throws BookException  {
         try {
             if (bookRepository.existsBook(book.getId())) {
-                bookRepository.remove(book.getId());
+                return bookRepository.remove(book.getId()) > 0;
             }
         } catch (BookException e) {
             throw new BookException("It was not possible to remove book " + book.getName());
         }
+        return false;
     }
 
     public void removeBook(int bookId) throws BookException  {
