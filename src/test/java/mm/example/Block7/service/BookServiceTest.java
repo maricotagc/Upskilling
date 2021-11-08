@@ -1,8 +1,5 @@
 package mm.example.Block7.service;
 
-import com.tngtech.java.junit.dataprovider.DataProvider;
-import com.tngtech.java.junit.dataprovider.DataProviderRunner;
-import com.tngtech.java.junit.dataprovider.UseDataProvider;
 import mm.example.Block7.AbstractBaseTest;
 import mm.example.Block7.model.Book;
 import mm.example.Block7.repository.BookRepository;
@@ -11,15 +8,11 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-
-@RunWith(DataProviderRunner.class)
 public class BookServiceTest extends AbstractBaseTest {
 
     DatabaseManager databaseManager;
@@ -34,44 +27,16 @@ public class BookServiceTest extends AbstractBaseTest {
         createTables(databaseManager.getConnection());
     }
 
-
-    @DataProvider
-    public static Object[][] bookData() {
-        return new Object[][]{
-                {"BOOK_D", "AUTHOR_D"},
-                {"BOOK_E", "AUTHOR_E"},
-                {"BOOK_F", "AUTHOR_F"}
-        };
-    }
-
-    @DataProvider
-    public static Object[][] booksIds() {
-        return new Object[][]{
-                {1},
-                {2},
-                {3}
-        };
-    }
-
-    @DataProvider
-    public static Object[][] bookNames() {
-        return new Object[][]{
-                {"Harry Potter and the Philosophers Stones"},
-                {"Harry Potter and the Chamber of Secrets"},
-                {"Harry Potter and the Prisoner of Azkaban"}
-        };
-    }
-
     @Test
-    @UseDataProvider("bookData")
-    public void createBook(String bookName, String bookAuthor) throws Exception {
-        BookService bookService = new BookService(bookRepositoryMock);
-
+    public void shouldCreateBook() throws Exception {
         // given
+        BookService bookService = new BookService(bookRepositoryMock);
         Book book1 = new Book();
-        book1.setName(bookName);
-        book1.setAuthor(bookAuthor);
+        book1.setName("BOOK_NAME_A");
+        book1.setAuthor("BOOK_AUTHOR_A");
+
         when(bookRepositoryMock.create(book1)).thenReturn(1);
+        when(bookRepositoryMock.findByName(book1.getName())).thenReturn(null);
 
         // when
         boolean result = bookService.createBook(book1);
@@ -81,79 +46,78 @@ public class BookServiceTest extends AbstractBaseTest {
     }
 
     @Test
-    public void removeBook() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
-        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        BookService bookService = new BookService(bookRepository);
+    public void shouldRemoveBook() throws Exception {
+        BookService bookService = new BookService(bookRepositoryMock);
 
-        Book book = new Book();
-        book.setId(1);
-        book.setName("Harry Potter and the Philosophers Stone");
-        book.setAuthor("J.K. Rowling");
+        // given
+        Book book1 = new Book();
+        book1.setId(1);
+        book1.setName("BOOK_NAME_A");
+        book1.setAuthor("BOOK_AUTHOR_A");
 
-        try {
-            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByName("Harry Potter and the Philosophers Stone").getName());
-            bookService.removeBook(book);
-            Assert.assertEquals(null, bookRepository.findByName("Harry Potter and the Philosophers Stone").getName());
-        } finally {
-            databaseManager.closeConnection();
-        }
+        when(bookRepositoryMock.existsBook(1)).thenReturn(true);
+        when(bookRepositoryMock.remove(book1.getId())).thenReturn(1);
+
+        // when
+        boolean result = bookService.removeBook(book1);
+
+        // then
+        Assert.assertTrue(result);
     }
 
     @Test
-    public void removeBookById() throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
-        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        BookService bookService = new BookService(bookRepository);
+    public void shouldRemoveBookById() throws Exception {
+        //given
+        BookService bookService = new BookService(bookRepositoryMock);
+        Book book1 = new Book();
+        book1.setId(1);
+        book1.setName("BOOK_NAME_A");
+        book1.setAuthor("BOOK_AUTHOR_A");
 
-        Book book = new Book();
-        book.setId(1);
-        book.setName("Harry Potter and the Philosophers Stone");
-        book.setAuthor("J.K. Rowling");
+        when(bookRepositoryMock.existsBook(1)).thenReturn(true);
+        when(bookRepositoryMock.remove(book1.getId())).thenReturn(1);
 
-        try {
-            Assert.assertEquals("Harry Potter and the Philosophers Stone", bookRepository.findByName("Harry Potter and the Philosophers Stone").getName());
-            bookService.removeBook(1);
-            Assert.assertEquals(null, bookRepository.findByName("Harry Potter and the Philosophers Stone").getName());
-        } finally {
-            databaseManager.closeConnection();
-        }
+        // when
+        bookService.removeBook(book1.getId());
+
+        // then
+        bookService.removeBook(book1.getId());
     }
 
     @Test
-    @UseDataProvider("booksIds")
-    public void findBookById(int bookId) throws Exception {
-        DatabaseManager databaseManager = new DatabaseManager();
-        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        BookService bookService = new BookService(bookRepository);
+    public void shouldFindBookById() throws Exception {
+        // given
+        BookService bookService = new BookService(bookRepositoryMock);
+        Book book1 = new Book();
+        book1.setId(1);
+        book1.setName("BOOK_NAME_A");
+        book1.setAuthor("BOOK_AUTHOR_A");
 
+        when(bookRepositoryMock.findById(1)).thenReturn(book1);
+
+        // when
+        Book actual = bookService.findById(1);
+
+        // then
+        Assert.assertEquals(book1, actual);
+
+    }
+
+    @Test
+    public void shouldFindBookByName() throws Exception {
+        // given
+        BookService bookService = new BookService(bookRepositoryMock);
         Book expectedBook = new Book();
-        expectedBook.setId(bookId);
+        expectedBook.setName("BOOK_NAME_A");
+        expectedBook.setAuthor("BOOK_AUTHOR_A");
 
-        try {
-            Assert.assertEquals(expectedBook.getId(), bookService.findById(bookId).getId());
-        } finally {
-            databaseManager.closeConnection();
-        }
-    }
+        when(bookRepositoryMock.findByName(expectedBook.getName())).thenReturn(expectedBook);
 
-    @Test
-    @UseDataProvider("bookNames")
-    public void findBookByName(String bookName) throws Exception {
+        // when
+        Book actualBook = bookService.findByName(expectedBook.getName());
 
-
-        DatabaseManager databaseManager = new DatabaseManager();
-        BookRepository bookRepository = new BookRepository(databaseManager.getConnection());
-        BookService bookService = new BookService(bookRepository);
-
-        Book expectedBook = new Book();
-        expectedBook.setName(bookName);
-
-        try {
-            Assert.assertEquals(expectedBook.getName(), bookService.findByName(bookName).getName());
-        } finally {
-            databaseManager.closeConnection();
-        }
+        // then
+        Assert.assertEquals(expectedBook, actualBook);
     }
 
     @After
