@@ -9,17 +9,18 @@ import mm.example.Block7.repository.BookLibraryRepository;
 import mm.example.Block7.repository.BookRepository;
 import mm.example.Block7.repository.LibraryRepository;
 import mm.example.Block7.utils.DatabaseManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BookLibraryServiceTest extends AbstractBaseTest {
 
-    DatabaseManager databaseManager;
+    static DatabaseManager databaseManager;
 
-    @Before
-    public void tearUp() throws Exception {
+    @BeforeEach
+    public void setUp() throws Exception {
         databaseManager = new DatabaseManager();
         createTables(databaseManager.getConnection());
     }
@@ -85,22 +86,36 @@ public class BookLibraryServiceTest extends AbstractBaseTest {
 
     @Test
     public void shouldReturnAvailableCopiesAfterRentingBook() throws Exception {
+        // given
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
         BookLibraryService bookLibraryService = new BookLibraryService(bookLibraryRepository);
+        createTestData();
+
+        // when
         bookLibraryService.rentBook(1, 1);
-        Assert.assertEquals(64, bookLibraryRepository.findAvailableCopies(1, 1));
+
+        // then
+        assertEquals(21, bookLibraryRepository.findAvailableCopies(1, 1));
+        removeTestData();
     }
 
     @Test
     public void shouldReturnSuccessfulMessageAfterBookRefund() throws Exception {
+        // given
+        createTestData();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
         BookLibraryService bookLibraryService = new BookLibraryService(bookLibraryRepository);
-        bookLibraryService.returnBook(1, 1);
-        Assert.assertEquals(66, bookLibraryRepository.findAvailableCopies(1, 1));
+
+        // when
+        int actualResult = bookLibraryService.returnBook(1, 1);
+
+        // then
+        assertEquals(1, actualResult);
+        assertEquals(23, bookLibraryRepository.findAvailableCopies(1, 1));
     }
 
-    @After
-    public void tearDown() {
+    @AfterAll
+    public static void tearDown() {
         databaseManager.closeConnection();
     }
 }

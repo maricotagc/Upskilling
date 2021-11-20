@@ -4,13 +4,14 @@ import mm.example.Block7.AbstractBaseTest;
 import mm.example.Block7.model.Book;
 import mm.example.Block7.repository.BookRepository;
 import mm.example.Block7.utils.DatabaseManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 public class BookServiceTest extends AbstractBaseTest {
@@ -20,7 +21,7 @@ public class BookServiceTest extends AbstractBaseTest {
     @Mock
     BookRepository bookRepositoryMock;
 
-    @Before
+    @BeforeAll
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         databaseManager = new DatabaseManager();
@@ -42,7 +43,7 @@ public class BookServiceTest extends AbstractBaseTest {
         boolean result = bookService.createBook(book1);
 
         // then
-        Assert.assertTrue(result);
+        assertTrue(result);
     }
 
     @Test
@@ -62,7 +63,7 @@ public class BookServiceTest extends AbstractBaseTest {
         boolean result = bookService.removeBook(book1);
 
         // then
-        Assert.assertTrue(result);
+        assertTrue(result);
     }
 
     @Test
@@ -99,7 +100,7 @@ public class BookServiceTest extends AbstractBaseTest {
         Book actual = bookService.findById(1);
 
         // then
-        Assert.assertEquals(book1, actual);
+        assertEquals(book1, actual);
 
     }
 
@@ -117,10 +118,10 @@ public class BookServiceTest extends AbstractBaseTest {
         Book actualBook = bookService.findByName(expectedBook.getName());
 
         // then
-        Assert.assertEquals(expectedBook, actualBook);
+        assertEquals(expectedBook, actualBook);
     }
 
-    @After
+    @AfterAll
     public void tearDown() {
         databaseManager.closeConnection();
     }

@@ -1,7 +1,5 @@
 package mm.example.Block7;
 
-import mm.example.Block7.model.Book;
-import mm.example.Block7.model.Library;
 import mm.example.Block7.utils.DatabaseManager;
 
 import java.sql.Connection;
@@ -9,17 +7,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public abstract class AbstractBaseTest {
-    private Book book1 = new Book();
-    private Book book2 = new Book();
-    private Book book3 = new Book();
-    private Book book4 = new Book();
-    private Book book5 = new Book();
-
-    private Library library1 = new Library();
-    private Library library2 = new Library();
-    private Library library3 = new Library();
-    private Library library4 = new Library();
-    private Library library5 = new Library();
 
     private DatabaseManager databaseManager;
     {
@@ -66,5 +53,4 @@ public abstract class AbstractBaseTest {
             statement.close();
         }
     }
-
 }

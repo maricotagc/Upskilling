@@ -4,16 +4,17 @@ import mm.example.Block7.AbstractBaseTest;
 import mm.example.Block7.exception.LibraryException;
 import mm.example.Block7.model.Library;
 import mm.example.Block7.utils.DatabaseManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class LibraryRepositoryTest extends AbstractBaseTest {
 
-    DatabaseManager databaseManager;
+    static DatabaseManager databaseManager;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         databaseManager = new DatabaseManager();
         createTables(databaseManager.getConnection());
@@ -50,32 +51,49 @@ public class LibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldCreateLibrary() throws Exception {
+        // given
         LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals(1, libraryRepository.create("LIBRARY_C", "ADDRESS_C"));
-        Assert.assertEquals("LIBRARY_C", libraryRepository.find(1).getName());
-        Assert.assertEquals("ADDRESS_C", libraryRepository.find(1).getAddress());
-        Assert.assertEquals(1, libraryRepository.find(1).getId());
+
+        // when
+        int actualResult = libraryRepository.create("LIBRARY_C", "ADDRESS_C");
+
+        //then
+        assertEquals(1, actualResult);
+        assertEquals("LIBRARY_C", libraryRepository.find(1).getName());
+        assertEquals("ADDRESS_C", libraryRepository.find(1).getAddress());
+        assertEquals(1, libraryRepository.find(1).getId());
     }
 
     @Test
     public void shouldRemoveLibrary() throws Exception {
+        // given
         createTestData();
         LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals(1, libraryRepository.remove(1));
+
+        // when
+        int actualResult = libraryRepository.remove(1);
+
+        // then
+        assertEquals(1, actualResult);
         removeTestData();
     }
 
     @Test
     public void shouldUpdateLibrary() throws Exception {
-        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
+        // given
         createTestData();
-        Assert.assertEquals("LIBRARY_A", libraryRepository.find(1).getName());
-        Assert.assertEquals(1, libraryRepository.update(1, "LIBRARY_UPDATE", "ADDRESS_UPDATE"));
-        Assert.assertEquals("LIBRARY_UPDATE", libraryRepository.find(1).getName());
+        LibraryRepository libraryRepository = new LibraryRepository(databaseManager.getConnection());
+
+        // when
+        int actualResult = libraryRepository.update(1, "LIBRARY_UPDATE", "ADDRESS_UPDATE");
+
+        // then
+        assertEquals(1, actualResult);
+        assertEquals("LIBRARY_UPDATE", libraryRepository.find(1).getName());
     }
 
-    @After
-    public void tearDown() {
+    @AfterAll
+    public static void tearDown() {
         databaseManager.closeConnection();
     }
 }
