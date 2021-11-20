@@ -49,7 +49,8 @@ public class BookRepository extends AbstractRepository {
             preparedStatement = connection.prepareStatement(SQL_DELETE_BY_ID);
             preparedStatement.setInt(1, bookId);
             result = preparedStatement.executeUpdate();
-        } catch (Exception e) {
+        } catch (Exception exception) {
+            System.err.println(exception);
             throw new BookException("It was not possible to remove the book with id = " + bookId + " from the database.");
         } finally {
             close(preparedStatement);

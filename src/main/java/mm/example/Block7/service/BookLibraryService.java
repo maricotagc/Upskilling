@@ -15,39 +15,39 @@ public class BookLibraryService {
         this.bookLibraryRepository = bookLibraryRepository;
     }
 
-    public void rentBook(Book book, Library library) throws BookLibraryException {
+    public boolean rentBook(Book book, Library library) throws BookLibraryException {
         try {
             int availableCopies = bookLibraryRepository.findAvailableCopies(book.getId(), library.getId());
             if (availableCopies == 0) {
                 throw new BookLibraryException("There are no available copies for renting. Book: " + book.getName());
             }
-            bookLibraryRepository.updateAvailableCopies(book.getId(), library.getId(), availableCopies - 1);
+            return bookLibraryRepository.updateAvailableCopies(availableCopies - 1, book.getId(), library.getId()) > 0;
         } catch (BookLibraryRepositoryException e) {
             throw new BookLibraryException("It was not possible to rent the book " + book.getName() + " from the library " + library.getName());
         }
     }
 
-    public void rentBook(int bookId, int libraryId) throws BookLibraryException {
+    public boolean rentBook(int bookId, int libraryId) throws BookLibraryException {
         Book book = new Book();
         book.setId(bookId);
         Library library = new Library();
         library.setId(libraryId);
 
-        rentBook(book, library);
+        return rentBook(book, library);
     }
 
-    public void returnBook(Book book, Library library) throws Exception {
+    public int returnBook(Book book, Library library) throws Exception {
             int availableCopies = bookLibraryRepository.findAvailableCopies(book.getId(), library.getId());
-            bookLibraryRepository.updateAvailableCopies(book.getId(), library.getId(), availableCopies + 1);
+            return bookLibraryRepository.updateAvailableCopies(availableCopies + 1, book.getId(), library.getId());
     }
 
-    public void returnBook(int bookId, int libraryId) throws Exception {
+    public int returnBook(int bookId, int libraryId) throws Exception {
         Book book = new Book();
         book.setId(bookId);
 
         Library library = new Library();
         library.setId(libraryId);
 
-        returnBook(book, library);
+        return returnBook(book, library);
     }
 }

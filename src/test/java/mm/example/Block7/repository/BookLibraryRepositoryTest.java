@@ -5,21 +5,20 @@ import mm.example.Block7.exception.BookException;
 import mm.example.Block7.exception.LibraryException;
 import mm.example.Block7.model.Book;
 import mm.example.Block7.model.Library;
-import mm.example.Block7.service.BookLibraryService;
 import mm.example.Block7.utils.DatabaseManager;
-import org.junit.After;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BookLibraryRepositoryTest extends AbstractBaseTest {
-    DatabaseManager databaseManager;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-    @Before
-    public void tearUp() throws Exception {
+public class BookLibraryRepositoryTest extends AbstractBaseTest {
+
+    static DatabaseManager databaseManager;
+
+    @BeforeEach
+    public void setUp() throws Exception {
         databaseManager = new DatabaseManager();
         createTables(databaseManager.getConnection());
     }
@@ -85,25 +84,35 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
 
     @Test
     public void shouldAddBookToTheLibrary() throws Exception {
-        BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
+        // given
         createTestData();
-        Assert.assertEquals(1, bookLibraryRepository.addBook(1, 1, 60, 22));
-        Assert.assertEquals(22, bookLibraryRepository.findAvailableCopies(1,1));
+
+        //when
+        BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
+
+        //then
+        assertEquals(1, bookLibraryRepository.addBook(1, 1, 60, 22));
+        assertEquals(22, bookLibraryRepository.findAvailableCopies(1,1));
         removeTestData();
     }
 
     @Test
     public void shouldUpdateAvailableCopies() throws Exception {
+        // given
         createTestData();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals(22, bookLibraryRepository.findAvailableCopies(1,1));
-        Assert.assertEquals(1, bookLibraryRepository.updateAvailableCopies(5, 1, 1));
-        Assert.assertEquals(5, bookLibraryRepository.findAvailableCopies(1, 1));
+
+        //when
+        bookLibraryRepository.updateAvailableCopies(5, 1, 1);
+
+        //then
+        assertEquals(5, bookLibraryRepository.findAvailableCopies(1, 1));
         removeTestData();
     }
 
     @Test
     public void shouldReturnListOfAvailableBooksInLibrary() throws Exception {
+        // given
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
         createTestData();
 
@@ -117,44 +126,66 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
         book2.setAuthor("AUTHOR_B");
         book2.setName("BOOK_B");
 
-        List<Book> er = new ArrayList<>();
-        er.add(book1);
-        er.add(book2);
+        List<Book> expectedResult = new ArrayList<>();
+        expectedResult.add(book1);
+        expectedResult.add(book2);
 
-        Assert.assertEquals(er, bookLibraryRepository.findAllAvailableBooks(1));
+        // when
+        List<Book> actualResult = bookLibraryRepository.findAllAvailableBooks(1);
+
+        // then
+        assertEquals(expectedResult, actualResult);
         removeTestData();
     }
 
     @Test
     public void shouldReturnAvailableCopies() throws Exception {
+        // given
         createTestData();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals(22, bookLibraryRepository.findAvailableCopies(1, 1));
+
+        // when
+        int actualResult = bookLibraryRepository.findAvailableCopies(1, 1);
+
+        // then
+        assertEquals(22, actualResult);
         removeTestData();
     }
 
     @Test
     public void shouldReturnTotalRentedBooks() throws Exception {
+        // given
         createTestData();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals(202, bookLibraryRepository.findTotalRentedBooks());
+
+        // when
+        int actualResult = bookLibraryRepository.findTotalRentedBooks();
+
+        //then
+        assertEquals(202, actualResult);
         removeTestData();
     }
 
     @Test
     public void shouldReturn0AvailableBooksAfterRentingAllBooks() throws Exception {
+        // given
         createTestData();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
-        Assert.assertEquals(1, bookLibraryRepository.updateAvailableCopies(0, 1, 1));
-        Assert.assertEquals(1, bookLibraryRepository.updateAvailableCopies(0, 2, 1));
-        Assert.assertEquals(1, bookLibraryRepository.updateAvailableCopies(0, 1, 2));
-        Assert.assertEquals(1, bookLibraryRepository.updateAvailableCopies(0, 2, 2));
-        Assert.assertEquals(0, bookLibraryRepository.findAllAvailableCopies());
+
+        // when
+        bookLibraryRepository.updateAvailableCopies(0, 1, 1);
+        bookLibraryRepository.updateAvailableCopies(0, 2, 1);
+        bookLibraryRepository.updateAvailableCopies(0, 1, 2);
+        bookLibraryRepository.updateAvailableCopies(0, 2, 2);
+
+        // then
+        assertEquals(0, bookLibraryRepository.findAllAvailableCopies());
         removeTestData();
     }
 
     @Test
     public void findAllBooksInLibrary() throws Exception {
+        // given
         createTestData();
         BookLibraryRepository bookLibraryRepository = new BookLibraryRepository(databaseManager.getConnection());
 
@@ -168,16 +199,20 @@ public class BookLibraryRepositoryTest extends AbstractBaseTest {
         book2.setAuthor("AUTHOR_B");
         book2.setName("BOOK_B");
 
-        List<Book> er = new ArrayList<>();
-        er.add(book1);
-        er.add(book2);
+        List<Book> expectedResult = new ArrayList<>();
+        expectedResult.add(book1);
+        expectedResult.add(book2);
 
-        Assert.assertEquals(er, bookLibraryRepository.findAllBooksInLibrary(1));
+        // when
+        List<Book> actualResult = bookLibraryRepository.findAllBooksInLibrary(1);
+
+        // then
+        assertEquals(expectedResult, actualResult);
         removeTestData();
     }
 
-    @After
-    public void tearDown() {
+    @AfterAll
+    public static void tearDown() {
         databaseManager.closeConnection();
     }
 }
