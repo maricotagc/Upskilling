@@ -6,6 +6,7 @@ import mm.example.Block7.repository.BookRepository;
 import mm.example.Block7.utils.DatabaseManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -16,12 +17,12 @@ import static org.mockito.Mockito.when;
 
 public class BookServiceTest extends AbstractBaseTest {
 
-    DatabaseManager databaseManager;
+    static DatabaseManager databaseManager;
 
     @Mock
     BookRepository bookRepositoryMock;
 
-    @BeforeAll
+    @BeforeEach
     public void setUp() throws Exception {
         MockitoAnnotations.openMocks(this);
         databaseManager = new DatabaseManager();
@@ -48,9 +49,8 @@ public class BookServiceTest extends AbstractBaseTest {
 
     @Test
     public void shouldRemoveBook() throws Exception {
-        BookService bookService = new BookService(bookRepositoryMock);
-
         // given
+        BookService bookService = new BookService(bookRepositoryMock);
         Book book1 = new Book();
         book1.setId(1);
         book1.setName("BOOK_NAME_A");
@@ -122,7 +122,7 @@ public class BookServiceTest extends AbstractBaseTest {
     }
 
     @AfterAll
-    public void tearDown() {
+    public static void tearDown() {
         databaseManager.closeConnection();
     }
 }
